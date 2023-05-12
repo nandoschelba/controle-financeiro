@@ -1,4 +1,3 @@
-from controle.controlador_gastos import ControladorGastos
+from controle.controlador_sistema import ControladorSistema
 
-controlador_gastos = ControladorGastos("teste")
-controlador_gastos.abre_tela()
+ControladorSistema().inicializa_sistema()
