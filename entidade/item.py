@@ -1,6 +1,8 @@
 class Item:
-    def __init__(self, codigo, valor, descricao, categoria=None):
-        self.codigo = codigo
+    ultimo_codigo = 0
+    def __init__(self, valor, descricao, categoria=None):
+        Item.ultimo_codigo += 1
+        self.codigo = Item.ultimo_codigo
         self.valor = valor
         self.descricao = descricao
         self.categoria = categoria

@@ -1,6 +1,7 @@
 class TelaGasto:
+
     def tela_opcoes(self):
-        print("-------- AMIGOS ----------")
+        print("-------- GASTOS ----------")
         print("Escolha a opcao")
         print("1 - Listar Gastos")
         print("2 - Adicionar novo gasto")
@@ -10,7 +11,6 @@ class TelaGasto:
 
         opcao = int(input("Escolha a opcao: "))
         return opcao
-    # code to display the main menu options for managing expenses
 
     def pega_dados_gasto(self):
         print("-------- DADOS GERAIS DO GASTO ----------")
@@ -31,19 +31,28 @@ class TelaGasto:
     def pega_add_novo(self):
         adicionar_item = input("Adicionar mais um item?(s/n) ")
 
-        return {"add": adicionar_item}
+        return {"adicionar_item": adicionar_item}
 
     def mostra_gasto(self, gasto):
-        ...
-    # code to display the details of an expense
+        print("CÓDIGO: ", gasto["codigo"])
+        print("NOME DO ESTABELECIMENTO: ", gasto["estabelecimento"])
+        print("DATA: ", gasto["mes"] + "/" + gasto["ano"])
+        print("DESCONTO: ", gasto["desconto"])
+        print("ITENS: ")
+        print("\n")
 
     def mostra_item(self, item):
-        ...
-    # code to display the details of an item
+        print("DESCRICAO: ", item["descricao"])
+        print("VALOR: ", item["valor"])
+        print("\n")
 
-    def seleciona_gasto(self, gastos):
-        ...
-    # code to display a list of expenses and prompt the user to select one
+    def seleciona_gasto(self):
+        codigo = input("Código do gasto que deseja selecionar: ")
+        return codigo
+
+    def seleciona_item(self):
+        codigo = input("Código do item que deseja selecionar: ")
+        return codigo
 
     def mostra_mensagem(self, mensagem):
         print(mensagem)

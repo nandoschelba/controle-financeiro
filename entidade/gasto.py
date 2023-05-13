@@ -1,6 +1,8 @@
 class Gasto:
-    def __init__(self, codigo, estabelecimento, mes, ano, desconto=0, itens=[]):
-        self.codigo = codigo
+    ultimo_codigo = 0
+    def __init__(self, estabelecimento, mes, ano, desconto=0, itens=[]):
+        Gasto.ultimo_codigo += 1
+        self.codigo = Gasto.ultimo_codigo
         self.estabelecimento = estabelecimento
         self.mes = mes
         self.ano = ano
