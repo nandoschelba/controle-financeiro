@@ -35,7 +35,6 @@ class ControladorUsuarios:
         self.__usuarios.append(usuario_fisico)
         self.__tela_usuario.mostra_mensagem("\nCadastro relizado com sucesso!")
 
-
     def abre_tela_usuario(self):
         lista_opcoes = {1: self.editar_usuario, 2: self.encerrar_conta, 0: self.retornar}
         while True:
@@ -43,19 +42,24 @@ class ControladorUsuarios:
 
     def editar_usuario(self):
         dados_edicao = self.__tela_usuario.pega_dados_usuario_edicao()
-        self.usuario_logado.nome = dados_edicao["nome"]
-        self.usuario_logado.email = dados_edicao["email"]
-        for usuario in self.__usuarios:
-            if usuario.identificador() == self.usuario_logado.identificador():
-                usuario.nome = dados_edicao["nome"]
-                usuario.email = dados_edicao["email"]
-                break
-        self.__tela_usuario.mostra_mensagem("\nUsuário editado com sucesso!")
+        if dados_edicao:
+            self.usuario_logado.nome = dados_edicao["nome"]
+            self.usuario_logado.email = dados_edicao["email"]
+            for usuario in self.__usuarios:
+                if usuario.identificador() == self.usuario_logado.identificador():
+                    usuario.nome = dados_edicao["nome"]
+                    usuario.email = dados_edicao["email"]
+                    break
+            self.__tela_usuario.mostra_mensagem("\nUsuário editado com sucesso!")
 
     def encerrar_conta(self):
         lista_opcoes = {1: self.deletar_usuario, 0: self.abre_tela_usuario}
         while True:
-            lista_opcoes[self.__tela_usuario.confirmar_deletar_conta()]()
+            try:
+                opcao = self.__tela_usuario.confirmar_deletar_conta()
+                lista_opcoes[opcao]()
+            except KeyError:
+                self.__tela_usuario.mostra_mensagem("\nOpção inválida. Tente novamente.")
 
     def deletar_usuario(self):
         self.__usuarios.remove(self.usuario_logado)
@@ -67,11 +71,8 @@ class ControladorUsuarios:
         self.__controlador_sistema.abre_tela()
 
     def efetuar_login(self):
-        if self.usuario_logado:
-            self.__tela_usuario.mostra_mensagem("\nJá existe um usuário logado!")
-            self.retornar()
-        else:
-            input_login_usuario = self.__tela_usuario.loga_usuario()
+        input_login_usuario = self.__tela_usuario.loga_usuario()
+        if input_login_usuario:
             for usuario in self.__usuarios:
                 if usuario.identificador() == input_login_usuario["id"] and \
                         usuario.email == input_login_usuario["email"]:

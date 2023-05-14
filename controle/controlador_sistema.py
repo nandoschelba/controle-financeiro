@@ -1,6 +1,8 @@
 from limite.tela_sistema import TelaSistema
 from controle.controlador_usuarios import ControladorUsuarios
 from controle.controlador_categoria import ControladorCategoria
+from controle.controlador_orcamentos import ControladorOrcamentos
+from controle.controlador_gastos import ControladorGastos
 
 
 class ControladorSistema:
@@ -8,29 +10,35 @@ class ControladorSistema:
     def __init__(self):
         self.__controlador_usuarios = ControladorUsuarios(self)
         self.__controlador_categorias = ControladorCategoria(self)
+        self.__controlador_orcamentos = ControladorOrcamentos(self)
+        self.__controlador_gastos = ControladorGastos(self)
         self.__tela_sistema = TelaSistema()
 
     def inicializa_sistema(self):
         self.abre_tela()
 
     def abre_tela(self):
-        lista_opcoes_usuario_logado = {1: self.tela_usuarios,
-                                       2: self.tela_categorias,
-                                       3: self.cadastra_orcamento,
-                                       4: self.cadastra_gastos,
-                                       5: self.logout,
-                                       0: self.encerra_sistema}
+        lista_opcoes_usuario_logado = {1: self.tela_usuarios, 2: self.tela_categorias, 3: self.cadastra_orcamento,
+                                       4: self.cadastra_gastos, 5: self.logout, 0: self.encerra_sistema}
 
         lista_opcoes_usuario_deslogado = {1: self.login, 2: self.cadastra_usuarios, 0: self.encerra_sistema}
 
         while True:
             if self.__controlador_usuarios.usuario_logado:
                 opcao_escolhida = self.__tela_sistema.tela_opcoes_usuario_logado()
-                funcao_escolhida = lista_opcoes_usuario_logado[opcao_escolhida]
+                try:
+                    funcao_escolhida = lista_opcoes_usuario_logado[opcao_escolhida]
+                except KeyError:
+                    self.__tela_sistema.mostra_mensagem("\nOpção inválida. Tente novamente.")
+                    continue
                 funcao_escolhida()
             else:
                 opcao_escolhida = self.__tela_sistema.tela_opcoes_usuario_deslogado()
-                funcao_escolhida = lista_opcoes_usuario_deslogado[opcao_escolhida]
+                try:
+                    funcao_escolhida = lista_opcoes_usuario_deslogado[opcao_escolhida]
+                except KeyError:
+                    self.__tela_sistema.mostra_mensagem("\nOpção inválida. Tente novamente.")
+                    continue
                 funcao_escolhida()
 
     def login(self):
