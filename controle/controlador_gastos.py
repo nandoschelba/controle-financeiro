@@ -21,8 +21,19 @@ class ControladorGastos:
         self.__controlador_principal.abre_tela()
 
     def lista_gastos(self):
+        usuario_logado = self.__controlador_principal.controlador_usuarios.pega_codigo_usuario_logado()
         for gasto in self.__gastos:
-            self.mostra_gasto(gasto)
+            if usuario_logado == gasto.usuario:
+                self.mostra_gasto(gasto)
+
+    def pega_gastos_por_usuario(self, mes, ano):
+        usuario_logado = self.__controlador_principal.controlador_usuarios.pega_codigo_usuario_logado()
+        gastos = []
+        for gasto in self.__gastos:
+            if usuario_logado == gasto.usuario & gasto.mes == mes & gasto.ano == ano:
+                gastos.append(gasto)
+
+        return gastos
 
     def pega_gasto_por_codigo(self, codigo):
         for gasto in self.__gastos:
@@ -38,12 +49,11 @@ class ControladorGastos:
 
     def mostra_gasto(self, gasto):
         self.__tela_gasto.mostra_gasto({"codigo": gasto.codigo, "estabelecimento": gasto.estabelecimento,
-             "mes": gasto.mes, "ano": gasto.ano, "desconto": gasto.desconto})
+             "mes": gasto.mes, "ano": gasto.ano})
         for item in gasto.itens:
             self.__tela_gasto.mostra_item({"valor": item.valor, "descricao": item.descricao})
 
     def adiciona_gasto(self):
-        #Não esquecer de adionar relação com usuário
         print("adiciona_gasto")
         dados_gasto = self.__tela_gasto.pega_dados_gasto()
         itens = []
@@ -54,7 +64,8 @@ class ControladorGastos:
             dado_add_novo = self.__tela_gasto.pega_add_novo()
             if dado_add_novo["adicionar_item"] != "s":
                 break
-        self.__gastos.append(Gasto(dados_gasto["estabelecimento"], dados_gasto["mes"], dados_gasto["ano"], dados_gasto["desconto"], itens))
+        usuario_logado = self.__controlador_principal.controlador_usuarios.pega_codigo_usuario_logado()
+        self.__gastos.append(Gasto(usuario_logado, dados_gasto["estabelecimento"], dados_gasto["mes"], dados_gasto["ano"], itens))
         self.__tela_gasto.mostra_mensagem("Gasto registrado com sucesso")
 
     # code to add a new expense
@@ -70,12 +81,14 @@ class ControladorGastos:
         else:
             self.__tela_gasto.mostra_mensagem("ATENCAO: Gasto não existente")
 
-    # code to delete an expense
-
     def add_item(self):
         dados_item = self.__tela_gasto.pega_dados_item()
-        print(dados_item)
-        return Item(1, dados_item["valor"], dados_item["descricao"])
+
+        self.__controlador_principal.controlador_categorias.listar_categorias()
+        codigo_categoria = self.__controlador_principal.controlador_categorias.seleciona_categoria()
+        categoria = self.__controlador_principal.controlador_categorias.buscar_categoria_por_codigo(codigo_categoria)
+
+        return Item(dados_item["valor"], dados_item["descricao"], categoria)
 
     def atualiza_gasto(self):
         self.lista_gastos()
@@ -87,7 +100,6 @@ class ControladorGastos:
             gasto.estabelecimento = dados_gasto["estabelecimento"]
             gasto.mes = dados_gasto["mes"]
             gasto.ano = dados_gasto["ano"]
-            gasto.desconto = dados_gasto["desconto"]
         else:
             self.__tela_gasto.mostra_mensagem("ATENCAO: Gasto não existente")
 

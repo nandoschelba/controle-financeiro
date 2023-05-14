@@ -1,26 +1,27 @@
+from entidade.categoria import Categoria
+
+
 class Meta:
     ultimo_codigo = 0
-    def __init__(self, meta: float, descricao: str, categoria: str):
+    def __init__(self, meta: float, categoria: Categoria, usuario: int):
         Meta.ultimo_codigo += 1
-        self.codigo = Meta.ultimo_codigo
-        self.meta = meta
-        self.descricao = descricao
-        self.categoria = categoria
+        self.__codigo = Meta.ultimo_codigo
+        self.__meta = meta
+        self.__categoria = categoria
+        self.__usuario = usuario
 
-    def codigo(self, codigo: int = None):
-        if codigo is not None:
-            self.codigo = codigo
-        else:
-            return self.codigo
+    @property
+    def codigo(self):
+        return self.__codigo
 
-    def categoria(self, categoria: str = None):
-        if categoria is not None:
-            self.categoria = categoria
-        else:
-            return self.categoria
+    @property
+    def categoria(self):
+        return self.__categoria
 
-    def meta(self, meta: float = None):
-        if meta is not None:
-            self.meta = meta
-        else:
-            return self.meta
+    @property
+    def meta(self):
+        return self.__meta
+
+    @property
+    def usuario(self):
+        return self.__usuario

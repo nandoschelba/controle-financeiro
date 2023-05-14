@@ -10,6 +10,7 @@ class TelaOrcamento:
         print("5 - Adicionar nova meta")
         print("6 - Deletar meta")
         print("7 - Atualizar meta")
+        print("8 - Emitir relatorio")
         print("0 - Retornar")
 
         opcao = int(input("Escolha a opcao: "))
@@ -30,6 +31,13 @@ class TelaOrcamento:
 
         return {"meta": meta, "descricao": descricao}
 
+    def pega_dados_relario(self):
+        print("-------- DADOS DO RELATÓRIO ----------")
+        mes = input("MES: ")
+        ano = input("ANO: ")
+
+        return {"mes": mes, "ano": ano}
+
     def pega_add_novo(self):
         adicionar_meta = input("Adicionar mais uma meta?(s/n) ")
 
@@ -44,8 +52,15 @@ class TelaOrcamento:
     def mostra_meta(self, meta):
         print("CODIGO: ", meta["codigo"])
         print("VALOR DA META: ", meta["meta"])
-        print("DESCRICAO: ", meta["descricao"])
         print("CATEGORIA: ", meta["categoria"])
+
+        print("\n")
+
+    def mostra_relatorio(self, item_categoria):
+        print("DATA: ", item_categoria["mes"] + "/" + item_categoria["ano"])
+        print("CATEGORIA: ", item_categoria["categoria"])
+        print("VALOR DA META: ", item_categoria["meta"])
+        print("VALOR GASTO: ", item_categoria["gasto"])
 
         print("\n")
 

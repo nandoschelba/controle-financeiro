@@ -52,3 +52,6 @@ class ControladorUsuarios:
     def login(self, email: str):
         pass
 
+    def pega_codigo_usuario_logado(self):
+        return 1
+

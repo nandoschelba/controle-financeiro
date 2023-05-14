@@ -17,9 +17,8 @@ class TelaGasto:
         estabelecimento = input("Estabelecimento: ")
         mes = input("Mes: ")
         ano = input("Ano: ")
-        desconto = input("Desconto: ")
 
-        return {"estabelecimento": estabelecimento, "mes": mes, "ano": ano, "desconto": desconto }
+        return {"estabelecimento": estabelecimento, "mes": mes, "ano": ano}
 
     def pega_dados_item(self):
         print("-------- DADOS DO ITEM ----------")
@@ -37,7 +36,6 @@ class TelaGasto:
         print("CÓDIGO: ", gasto["codigo"])
         print("NOME DO ESTABELECIMENTO: ", gasto["estabelecimento"])
         print("DATA: ", gasto["mes"] + "/" + gasto["ano"])
-        print("DESCONTO: ", gasto["desconto"])
         print("ITENS: ")
         print("\n")
 

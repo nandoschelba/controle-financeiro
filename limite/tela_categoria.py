@@ -25,8 +25,9 @@ class TelaCategoria:
         print("Nome:", dados_categoria["nome"])
         print("Descrição:", dados_categoria["descricao"])
 
-    def seleciona_categoria(self, categorias):
-        pass
+    def seleciona_categoria(self):
+        codigo = input("Código da categoria que deseja selecionar: ")
+        return codigo
 
     def mostra_mensagem(self, mensagem):
         print(mensagem)

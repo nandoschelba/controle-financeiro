@@ -38,9 +38,9 @@ class ControladorSistema:
     def controlador_usuarios(self):
         return self.__controlador_usuarios
 
-    #@property
-    #def controlador_categorias(self):
-    #   return self.__controlador_categorias
+    @property
+    def controlador_categorias(self):
+        return self.__controlador_categorias
 
     @property
     def controlador_orcamentos(self):

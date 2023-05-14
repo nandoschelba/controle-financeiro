@@ -1,13 +1,20 @@
 class Gasto:
     ultimo_codigo = 0
-    def __init__(self, estabelecimento, mes, ano, desconto=0, itens=[]):
+    def __init__(self, usuario: int, estabelecimento: str, mes: int, ano: int, itens=[]):
         Gasto.ultimo_codigo += 1
         self.codigo = Gasto.ultimo_codigo
+        self.__usuario = usuario
         self.estabelecimento = estabelecimento
         self.mes = mes
         self.ano = ano
-        self.desconto = desconto
         self.itens = itens
+
+
+    def usuario(self, usuario=None):
+        if usuario is not None:
+            self.__usuario = usuario
+        else:
+            return self.__usuario
 
     def codigo(self, codigo=None):
         if codigo is not None:
@@ -32,12 +39,6 @@ class Gasto:
             self.ano = ano
         else:
             return self.ano
-
-    def desconto(self, desconto=None):
-        if desconto is not None:
-            self.desconto = desconto
-        else:
-            return self.desconto
 
     def itens(self, itens=None):
         if itens is not None:

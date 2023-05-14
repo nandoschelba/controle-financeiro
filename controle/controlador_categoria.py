@@ -1,7 +1,7 @@
 from entidade.categoria import Categoria
 
 
-class ControladorCategoria():
+class ControladorCategoria:
     def __init__(self, controlador_sistema):
         from limite.tela_categoria import TelaCategoria
         self.__controlador_sistema = controlador_sistema
@@ -17,7 +17,7 @@ class ControladorCategoria():
 
     def buscar_categoria_por_codigo(self, codigo):
         for categoria in self.categorias:
-            if categoria.codigo == codigo:
+            if str(categoria.codigo) == str(codigo):
                 return categoria
         return None
 
@@ -28,6 +28,9 @@ class ControladorCategoria():
 
     def remover_categoria(self):
         pass
+
+    def seleciona_categoria(self):
+        return self.__tela_categoria.seleciona_categoria()
 
     def abre_tela(self):
         lista_opcoes = {1: self.adicionar_categoria, 2: self.listar_categorias, 0: self.retornar}
