@@ -7,30 +7,30 @@ class ControladorSistema:
 
     def __init__(self):
         self.__controlador_usuarios = ControladorUsuarios(self)
-        self.__controlador_categorias = ControladorCategoria(self, self.__controlador_usuarios)
+        self.__controlador_categorias = ControladorCategoria(self)
         self.__tela_sistema = TelaSistema()
 
     def inicializa_sistema(self):
         self.abre_tela()
 
     def abre_tela(self):
-        lista_opcoes = {1: self.login,
-                        2: self.cadastra_usuarios,
-                        3: self.tela_usuarios,
-                        4: self.tela_categorias,
-                        5: self.cadastra_orcamento,
-                        6: self.cadastra_gastos,
-                        7: self.logout,
-                        0: self.encerra_sistema}
+        lista_opcoes_usuario_logado = {1: self.tela_usuarios,
+                                       2: self.tela_categorias,
+                                       3: self.cadastra_orcamento,
+                                       4: self.cadastra_gastos,
+                                       5: self.logout,
+                                       0: self.encerra_sistema}
+
+        lista_opcoes_usuario_deslogado = {1: self.login, 2: self.cadastra_usuarios, 0: self.encerra_sistema}
 
         while True:
             if self.__controlador_usuarios.usuario_logado:
                 opcao_escolhida = self.__tela_sistema.tela_opcoes_usuario_logado()
-                funcao_escolhida = lista_opcoes[opcao_escolhida]
+                funcao_escolhida = lista_opcoes_usuario_logado[opcao_escolhida]
                 funcao_escolhida()
             else:
                 opcao_escolhida = self.__tela_sistema.tela_opcoes_usuario_deslogado()
-                funcao_escolhida = lista_opcoes[opcao_escolhida]
+                funcao_escolhida = lista_opcoes_usuario_deslogado[opcao_escolhida]
                 funcao_escolhida()
 
     def login(self):
@@ -51,6 +51,10 @@ class ControladorSistema:
     @property
     def controlador_categorias(self):
         return self.__controlador_categorias
+
+    @property
+    def controlador_usuarios(self):
+        return self.__controlador_usuarios
 
     @property
     def controlador_orcamentos(self):
