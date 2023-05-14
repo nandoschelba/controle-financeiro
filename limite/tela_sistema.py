@@ -1,9 +1,17 @@
 class TelaSistema:
-    def tela_opcoes(self):
-        print("-------- Gestão de gastos ---------")
-        print("Escolha sua opcao")
-        print("1 - Usuarios")
-        print("2 - Categorias")
+    def tela_opcoes_usuario_deslogado(self):
+        print("\n-------- Gestão de gastos ---------")
+        print("1 - Login")
+        print("2 - Realizar cadastro no sistema")
         print("0 - Finalizar sistema")
-        opcao = int(input("Escolha a opcao:"))
+        opcao = int(input("Escolha a opcao desejada: "))
+        return opcao
+
+    def tela_opcoes_usuario_logado(self):
+        print("\n-------- Gestão de gastos ---------")
+        print("3 - Opções de usuário")
+        print("4 - Categorias")
+        print("5 - Logout")
+        print("0 - Finalizar sistema")
+        opcao = int(input("Escolha a opcao desejada: "))
         return opcao

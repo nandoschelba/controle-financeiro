@@ -6,6 +6,7 @@ class Usuario(ABC):
         self.__nome = nome
         self.__email = email
         self.__categorias = []
+        self.__logado = False
 
     @abstractmethod
     def identificador(self):
@@ -26,6 +27,15 @@ class Usuario(ABC):
     @email.setter
     def email(self, email):
         self.__email = email
+
+    def login(self):
+        self.__logado = True
+
+    def logout(self):
+        self.__logado = False
+
+    def checa_status_logado(self):
+        return self.__logado
 
     def add_categoria(self, categoria: Categoria):
         if categoria not in self.__categorias:
