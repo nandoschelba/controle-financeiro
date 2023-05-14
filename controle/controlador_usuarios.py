@@ -90,3 +90,9 @@ class ControladorUsuarios:
             self.usuario_logado = None
             self.__tela_usuario.mostra_mensagem("\nLogout efetuado!")
             self.retornar()
+
+    def pega_codigo_usuario_logado(self):
+        if self.usuario_logado:
+            return self.usuario_logado.identificador()
+        else:
+            return 0

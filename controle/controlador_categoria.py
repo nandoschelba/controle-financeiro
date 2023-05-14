@@ -16,7 +16,7 @@ class ControladorCategoria():
                               self.__controlador_usuarios.usuario_logado.identificador())
         self.categorias.append(categoria)
 
-    def buscar_categoria_por_codigo(self):
+    def buscar_categoria_por_codigo_edicao(self):
         categorias_usuario_logado = [categoria for categoria in self.categorias
                                      if
                                      categoria.id_usuario == self.__controlador_usuarios.usuario_logado.identificador()]
@@ -86,12 +86,21 @@ class ControladorCategoria():
                 self.__tela_categoria.mostra_mensagem("\nCategoria excluída com sucesso!")
                 break
 
+    def seleciona_categoria(self):
+        return self.__tela_categoria.seleciona_categoria()
+
     def abre_tela(self):
-        lista_opcoes = {1: self.adicionar_categoria, 2: self.listar_categorias, 3: self.buscar_categoria_por_codigo,
+        lista_opcoes = {1: self.adicionar_categoria, 2: self.listar_categorias, 3: self.buscar_categoria_por_codigo_edicao,
                         4: self.selecionar_categoria_exclusao, 0: self.retornar}
         continua = True
         while continua:
             lista_opcoes[self.__tela_categoria.tela_opcoes()]()
+
+    def buscar_categoria_por_codigo(self, codigo):
+        for categoria in self.categorias:
+            if str(categoria.codigo) == str(codigo):
+                return categoria
+        return None
 
     def retornar(self):
         self.__controlador_sistema.abre_tela()

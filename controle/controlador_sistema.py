@@ -18,7 +18,9 @@ class ControladorSistema:
                         2: self.cadastra_usuarios,
                         3: self.tela_usuarios,
                         4: self.tela_categorias,
-                        5: self.logout,
+                        5: self.cadastra_orcamento,
+                        6: self.cadastra_gastos,
+                        7: self.logout,
                         0: self.encerra_sistema}
 
         while True:
@@ -45,6 +47,24 @@ class ControladorSistema:
 
     def logout(self):
         self.__controlador_usuarios.efetuar_logout()
+
+    @property
+    def controlador_categorias(self):
+        return self.__controlador_categorias
+
+    @property
+    def controlador_orcamentos(self):
+        return self.__controlador_orcamentos
+
+    def cadastra_orcamento(self):
+        self.__controlador_orcamentos.abre_tela()
+
+    @property
+    def controlador_gastos(self):
+        return self.__controlador_gastos
+
+    def cadastra_gastos(self):
+        self.__controlador_gastos.abre_tela()
 
     def encerra_sistema(self):
         exit(0)

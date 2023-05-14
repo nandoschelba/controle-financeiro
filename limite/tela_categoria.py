@@ -59,3 +59,7 @@ class TelaCategoria:
 
     def mostra_mensagem(self, mensagem: str):
         print(mensagem)
+
+    def seleciona_categoria(self):
+        codigo = input("Código da categoria que deseja selecionar: ")
+        return codigo
