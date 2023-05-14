@@ -1,3 +1,5 @@
+from controle.controlador_gastos import ControladorGastos
+from controle.controlador_orcamentos import ControladorOrcamentos
 from limite.tela_sistema import TelaSistema
 from controle.controlador_usuarios import ControladorUsuarios
 from controle.controlador_categoria import ControladorCategoria
@@ -8,6 +10,8 @@ class ControladorSistema:
     def __init__(self):
         self.__controlador_usuarios = ControladorUsuarios(self)
         self.__controlador_categorias = ControladorCategoria(self)
+        self.__controlador_orcamentos = ControladorOrcamentos(self)
+        self.__controlador_gastos = ControladorGastos(self)
         self.__tela_sistema = TelaSistema()
 
     def inicializa_sistema(self):

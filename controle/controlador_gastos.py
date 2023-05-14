@@ -1,4 +1,5 @@
 from entidade.gasto import Gasto
+from exceptions.categoria_invalida_error import CategoriaInvalidaError
 from limite.tela_gasto import TelaGasto
 from entidade.item import Item
 
@@ -11,7 +12,7 @@ class ControladorGastos:
 
     def abre_tela(self):
         lista_opcoes = {1: self.lista_gastos, 2: self.adiciona_gasto, 3: self.deleta_gasto, 4: self.atualiza_gasto,
-                        0: self.retornar}
+                        5: self.emite_relatorio, 0: self.retornar}
 
         continua = True
         while continua:
@@ -23,14 +24,21 @@ class ControladorGastos:
     def lista_gastos(self):
         usuario_logado = self.__controlador_principal.controlador_usuarios.pega_codigo_usuario_logado()
         for gasto in self.__gastos:
-            if usuario_logado == gasto.usuario:
+            if str(usuario_logado) == str(gasto.usuario):
                 self.mostra_gasto(gasto)
+
+    def emite_relatorio(self):
+        dados = self.__tela_gasto.pega_dados_relario()
+        gastos = self.pega_gastos_por_usuario(dados["mes"], dados["ano"])
+
+        for gasto in gastos:
+            self.mostra_gasto(gasto)
 
     def pega_gastos_por_usuario(self, mes, ano):
         usuario_logado = self.__controlador_principal.controlador_usuarios.pega_codigo_usuario_logado()
         gastos = []
         for gasto in self.__gastos:
-            if usuario_logado == gasto.usuario & gasto.mes == mes & gasto.ano == ano:
+            if str(usuario_logado) == str(gasto.usuario) and str(gasto.mes) == str(mes) and str(gasto.ano) == str(ano):
                 gastos.append(gasto)
 
         return gastos
@@ -54,12 +62,15 @@ class ControladorGastos:
             self.__tela_gasto.mostra_item({"valor": item.valor, "descricao": item.descricao})
 
     def adiciona_gasto(self):
-        print("adiciona_gasto")
         dados_gasto = self.__tela_gasto.pega_dados_gasto()
         itens = []
 
         while True:
-            itens.append(self.add_item())
+            try:
+                itens.append(self.add_item())
+            except CategoriaInvalidaError as e:
+                print(e)
+                return
             self.__tela_gasto.mostra_mensagem("Item adicionado com sucesso")
             dado_add_novo = self.__tela_gasto.pega_add_novo()
             if dado_add_novo["adicionar_item"] != "s":
@@ -88,7 +99,10 @@ class ControladorGastos:
         codigo_categoria = self.__controlador_principal.controlador_categorias.seleciona_categoria()
         categoria = self.__controlador_principal.controlador_categorias.buscar_categoria_por_codigo(codigo_categoria)
 
-        return Item(dados_item["valor"], dados_item["descricao"], categoria)
+        if categoria is not None:
+            return Item(dados_item["valor"], dados_item["descricao"], categoria)
+        else:
+           raise CategoriaInvalidaError
 
     def atualiza_gasto(self):
         self.lista_gastos()
@@ -115,4 +129,3 @@ class ControladorGastos:
             self.gasto.itens.remove(item)
         else:
             self.__tela_gasto.mostra_mensagem("ATENCAO: Item não existente")
-

@@ -85,13 +85,14 @@ class ControladorCategoria:
                                      categoria.id_usuario == self.pega_id_usuario_logado()]
 
         if not categorias_usuario_logado:
-            return self.__tela_categoria.mostra_mensagem("\nNão existem categorias cadastradas.")
+            self.__tela_categoria.mostra_mensagem("\nNão existem categorias cadastradas.")
+            return None
         else:
             return categorias_usuario_logado
 
     def buscar_categoria_por_codigo(self, codigo: int):
         for categoria in self.categorias:
-            if categoria.codigo == codigo and categoria.id_usuario == self.pega_id_usuario_logado():
+            if str(categoria.codigo) == str(codigo) and str(categoria.id_usuario) == str(self.pega_id_usuario_logado()):
                 return categoria
         self.__tela_categoria.mostra_mensagem("\nCategoria não encontrada.")
         return None

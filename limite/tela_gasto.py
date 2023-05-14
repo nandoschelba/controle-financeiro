@@ -7,6 +7,7 @@ class TelaGasto:
         print("2 - Adicionar novo gasto")
         print("3 - Deletar gasto")
         print("4 - Atualizar gasto")
+        print("5 - Emite relatorio")
         print("0 - Retornar")
 
         opcao = int(input("Escolha a opcao: "))
@@ -27,6 +28,13 @@ class TelaGasto:
 
         return {"valor": valor, "descricao": descricao}
 
+    def pega_dados_relario(self):
+        print("-------- DADOS DO RELATÓRIO ----------")
+        mes = input("MES: ")
+        ano = input("ANO: ")
+
+        return {"mes": mes, "ano": ano}
+
     def pega_add_novo(self):
         adicionar_item = input("Adicionar mais um item?(s/n) ")
 
@@ -35,7 +43,7 @@ class TelaGasto:
     def mostra_gasto(self, gasto):
         print("CÓDIGO: ", gasto["codigo"])
         print("NOME DO ESTABELECIMENTO: ", gasto["estabelecimento"])
-        print("DATA: ", gasto["mes"] + "/" + gasto["ano"])
+        print("DATA: ", str(gasto["mes"]) + "/" + str(gasto["ano"]))
         print("ITENS: ")
         print("\n")
 

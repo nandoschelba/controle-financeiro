@@ -2,46 +2,57 @@ class Gasto:
     ultimo_codigo = 0
     def __init__(self, usuario: int, estabelecimento: str, mes: int, ano: int, itens=[]):
         Gasto.ultimo_codigo += 1
-        self.codigo = Gasto.ultimo_codigo
+        self.__codigo = Gasto.ultimo_codigo
         self.__usuario = usuario
-        self.estabelecimento = estabelecimento
-        self.mes = mes
-        self.ano = ano
-        self.itens = itens
+        self.__estabelecimento = estabelecimento
+        self.__mes = mes
+        self.__ano = ano
+        self.__itens = itens
 
+    @property
+    def codigo(self):
+        return self.__codigo
 
-    def usuario(self, usuario=None):
-        if usuario is not None:
-            self.__usuario = usuario
-        else:
-            return self.__usuario
+    @codigo.setter
+    def codigo(self, value):
+        self.__codigo = value
 
-    def codigo(self, codigo=None):
-        if codigo is not None:
-            self.codigo = codigo
-        else:
-            return self.codigo
+    @property
+    def usuario(self):
+        return self.__usuario
 
-    def estabelecimento(self, local=None):
-        if local is not None:
-            self.estabelecimento = local
-        else:
-            return self.estabelecimento
+    @usuario.setter
+    def usuario(self, value):
+        self.__usuario = value
 
-    def mes(self, mes=None):
-        if mes is not None:
-            self.mes = mes
-        else:
-            return self.mes
+    @property
+    def estabelecimento(self):
+        return self.__estabelecimento
 
-    def ano(self, ano=None):
-        if ano is not None:
-            self.ano = ano
-        else:
-            return self.ano
+    @estabelecimento.setter
+    def estabelecimento(self, value):
+        self.__estabelecimento = value
 
-    def itens(self, itens=None):
-        if itens is not None:
-            self.itens = itens
-        else:
-            return self.itens
+    @property
+    def mes(self):
+        return self.__mes
+
+    @mes.setter
+    def mes(self, value):
+        self.__mes = value
+
+    @property
+    def ano(self):
+        return self.__ano
+
+    @ano.setter
+    def ano(self, value):
+        self.__ano = value
+
+    @property
+    def itens(self):
+        return self.__itens
+
+    @itens.setter
+    def itens(self, value):
+        self.__itens = value
