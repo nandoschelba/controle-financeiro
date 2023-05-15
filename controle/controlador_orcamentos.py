@@ -132,7 +132,6 @@ class ControladorOrcamentos:
     def emite_relatorio(self):
         dados = self.__tela_orcamento.pega_dados_relario()
         gastos = self.__controlador_principal.controlador_gastos.pega_gastos_por_usuario(dados["mes"], dados["ano"])
-
         orcamento_mes = None
         for orcamento in self.__orcamentos:
             if str(orcamento.mes) == str(dados["mes"]) and str(orcamento.ano) == str(dados["ano"]):
@@ -146,8 +145,9 @@ class ControladorOrcamentos:
                 for gasto in gastos:
                     for item in gasto.itens:
                         if str(item.categoria.codigo) == str(meta.categoria.codigo):
-                            total_gasto += gasto.valor
-                relatorio.append({"mes": dados["mes"], "ano": dados["ano"], "categoria": meta.categoria.nome, "meta": meta.meta, "gasto": total_gasto})
+                            total_gasto += item.valor
+                relatorio.append({"mes": dados["mes"], "ano": dados["ano"], "categoria": meta.categoria.nome,
+                                  "meta": meta.meta, "gasto": total_gasto})
 
             for item in relatorio:
                 self.__tela_orcamento.mostra_relatorio(item)
