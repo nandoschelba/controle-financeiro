@@ -14,9 +14,11 @@ class ControladorGastos:
         lista_opcoes = {1: self.lista_gastos, 2: self.adiciona_gasto, 3: self.deleta_gasto, 4: self.atualiza_gasto,
                         5: self.emite_relatorio, 0: self.retornar}
 
-        continua = True
-        while continua:
-            lista_opcoes[self.__tela_gasto.tela_opcoes()]()
+        while True:
+            try:
+                lista_opcoes[self.__tela_gasto.tela_opcoes()]()
+            except KeyError:
+                print("\nOpção inválida. Digite um número válido.")
 
     def retornar(self):
         self.__controlador_principal.abre_tela()
@@ -57,7 +59,7 @@ class ControladorGastos:
 
     def mostra_gasto(self, gasto):
         self.__tela_gasto.mostra_gasto({"codigo": gasto.codigo, "estabelecimento": gasto.estabelecimento,
-             "mes": gasto.mes, "ano": gasto.ano})
+                                        "mes": gasto.mes, "ano": gasto.ano})
         for item in gasto.itens:
             self.__tela_gasto.mostra_item({"valor": item.valor, "descricao": item.descricao})
 
@@ -76,7 +78,8 @@ class ControladorGastos:
             if dado_add_novo["adicionar_item"] != "s":
                 break
         usuario_logado = self.__controlador_principal.controlador_usuarios.pega_codigo_usuario_logado()
-        self.__gastos.append(Gasto(usuario_logado, dados_gasto["estabelecimento"], dados_gasto["mes"], dados_gasto["ano"], itens))
+        self.__gastos.append(Gasto(usuario_logado, dados_gasto["estabelecimento"], dados_gasto["mes"],
+                                   dados_gasto["ano"], itens))
         self.__tela_gasto.mostra_mensagem("Gasto registrado com sucesso")
 
     # code to add a new expense
@@ -86,7 +89,7 @@ class ControladorGastos:
         codigo_gasto = self.__tela_gasto.seleciona_gasto()
         gasto = self.pega_gasto_por_codigo(codigo_gasto)
 
-        if (gasto is not None):
+        if gasto is not None:
             self.__gastos.remove(gasto)
             self.lista_gastos()
         else:
@@ -102,14 +105,14 @@ class ControladorGastos:
         if categoria is not None:
             return Item(dados_item["valor"], dados_item["descricao"], categoria)
         else:
-           raise CategoriaInvalidaError
+            raise CategoriaInvalidaError
 
     def atualiza_gasto(self):
         self.lista_gastos()
         codigo_gasto = self.__tela_gasto.seleciona_gasto()
         gasto = self.pega_gasto_por_codigo(codigo_gasto)
 
-        if (gasto is not None):
+        if gasto is not None:
             dados_gasto = self.__tela_gasto.pega_dados_gasto()
             gasto.estabelecimento = dados_gasto["estabelecimento"]
             gasto.mes = dados_gasto["mes"]
@@ -125,7 +128,7 @@ class ControladorGastos:
 
         codigo_item = self.__tela_gasto.seleciona_item()
         item = self.pega_item_por_codigo(codigo_item, gasto)
-        if (item is not None):
-            self.gasto.itens.remove(item)
+        if item is not None:
+            gasto.itens.remove(item)
         else:
             self.__tela_gasto.mostra_mensagem("ATENCAO: Item não existente")

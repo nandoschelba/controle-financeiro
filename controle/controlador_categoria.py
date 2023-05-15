@@ -76,8 +76,7 @@ class ControladorCategoria:
     def abre_tela(self):
         lista_opcoes = {1: self.adicionar_categoria, 2: self.listar_categorias, 3: self.buscar_categoria_e_editar,
                         4: self.busca_categoria_e_exclui, 0: self.retornar}
-        continua = True
-        while continua:
+        while True:
             try:
                 lista_opcoes[self.__tela_categoria.tela_opcoes()]()
             except KeyError:

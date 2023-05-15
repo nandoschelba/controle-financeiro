@@ -1,6 +1,7 @@
 class TelaGasto:
 
     def tela_opcoes(self):
+        opcoes_validas = [0, 1, 2, 3, 4, 5]
         print("-------- GASTOS ----------")
         print("Escolha a opcao")
         print("1 - Listar Gastos")
@@ -10,8 +11,12 @@ class TelaGasto:
         print("5 - Emite relatorio")
         print("0 - Retornar")
 
-        opcao = int(input("Escolha a opcao: "))
-        return opcao
+        opcao = input("Escolha a opção desejada: ")
+        if not opcao.isdigit():
+            return
+        if int(opcao) not in opcoes_validas:
+            return
+        return int(opcao)
 
     def pega_dados_gasto(self):
         print("-------- DADOS GERAIS DO GASTO ----------")

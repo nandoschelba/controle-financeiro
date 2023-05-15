@@ -1,6 +1,7 @@
 class TelaOrcamento:
 
     def tela_opcoes(self):
+        opcoes_validas = [0, 1, 2, 3, 4, 5, 6, 7, 8]
         print("-------- ORCAMENTOS ----------")
         print("Escolha a opcao")
         print("1 - Listar Orçamentos")
@@ -13,9 +14,12 @@ class TelaOrcamento:
         print("8 - Emitir relatorio")
         print("0 - Retornar")
 
-        opcao = int(input("Escolha a opcao: "))
-        return opcao
-    # code to display the main menu options for managing expenses
+        opcao = input("Escolha a opção desejada: ")
+        if not opcao.isdigit():
+            return
+        if int(opcao) not in opcoes_validas:
+            return
+        return int(opcao)
 
     def pega_dados_orcaento(self):
         print("-------- DADOS GERAIS DO ORCAMENTO ----------")

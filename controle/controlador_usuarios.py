@@ -38,7 +38,10 @@ class ControladorUsuarios:
     def abre_tela_usuario(self):
         lista_opcoes = {1: self.editar_usuario, 2: self.encerrar_conta, 0: self.retornar}
         while True:
-            lista_opcoes[self.__tela_usuario.tela_opcoes()]()
+            try:
+                lista_opcoes[self.__tela_usuario.tela_opcoes()]()
+            except KeyError:
+                print("\nOpção inválida. Digite um número válido.")
 
     def editar_usuario(self):
         dados_edicao = self.__tela_usuario.pega_dados_usuario_edicao()

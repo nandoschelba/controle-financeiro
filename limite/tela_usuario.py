@@ -82,8 +82,7 @@ class TelaUsuario:
         print("0 - Voltar")
         opcao = input("Escolha a opção desejada: ")
         if not opcao.isdigit():
-            print("\n A opção selecionada deve ser um número.")
             return
         if int(opcao) not in opcoes_validas:
-            print("\n Digite uma opção válida.")
+            return
         return int(opcao)
