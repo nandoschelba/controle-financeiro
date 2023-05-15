@@ -1,3 +1,5 @@
+from controle.controlador_gastos import ControladorGastos
+from controle.controlador_orcamentos import ControladorOrcamentos
 from limite.tela_sistema import TelaSistema
 from controle.controlador_usuarios import ControladorUsuarios
 from controle.controlador_categoria import ControladorCategoria
