@@ -3,6 +3,7 @@ from entidade.orcamento import Orcamento
 from exceptions.categoria_invalida_error import CategoriaInvalidaError
 from exceptions.meta_invalida_error import MetaInvalidaError
 from exceptions.meta_proibida_error import MetaProibidaError
+from exceptions.tipo_invalido_error import TipoInvalidoError
 from limite.tela_orcamento import TelaOrcamento
 
 
@@ -124,7 +125,7 @@ class ControladorOrcamentos:
             orcamento.ano = dados_orcamento["ano"]
             orcamento.metas = metas
         else:
-            self.__tela_gasto.mostra_mensagem("ATENCAO: Orçamento não existente")
+            self.__tela_orcamento.mostra_mensagem("ATENCAO: Orçamento não existente")
 
     def emite_relatorio(self):
         dados = self.__tela_orcamento.pega_dados_relario()
@@ -140,15 +141,16 @@ class ControladorOrcamentos:
 
             for meta in orcamento_mes.metas:
                 total_gasto = 0
-                for gasto in gastos.itens:
-                    if str(gasto.categoria.codigo) == str(meta.categoria.codigo):
-                        total_gasto += gasto.valor
+                for gasto in gastos:
+                    for item in gasto.itens:
+                        if str(item.categoria.codigo) == str(meta.categoria.codigo):
+                            total_gasto += gasto.valor
                 relatorio.append({"mes": dados["mes"], "ano": dados["ano"], "categoria": meta.categoria.nome, "meta": meta.meta, "gasto": total_gasto})
 
             for item in relatorio:
                 self.__tela_orcamento.mostra_relatorio(item)
         else:
-            self.__tela_gasto.mostra_mensagem("ATENCAO: Não há orçamento para o mês e ano selecionado")
+            self.__tela_orcamento.mostra_mensagem("ATENCAO: Não há orçamento para o mês e ano selecionado")
 
 
     def lista_metas(self):
@@ -163,21 +165,28 @@ class ControladorOrcamentos:
 
     def adiciona_meta(self):
         dados_meta = self.__tela_orcamento.pega_dados_meta()
+        try:
+            if self.isfloat(dados_meta["meta"]):
+                self.__controlador_principal.controlador_categorias.listar_categorias()
+                codigo_categoria = self.__controlador_principal.controlador_categorias.seleciona_categoria()
+                categoria = self.__controlador_principal.controlador_categorias.buscar_categoria_por_codigo(
+                    codigo_categoria)
+                usuario_logado = self.__controlador_principal.controlador_usuarios.pega_codigo_usuario_logado()
 
-        self.__controlador_principal.controlador_categorias.listar_categorias()
-        codigo_categoria = self.__controlador_principal.controlador_categorias.seleciona_categoria()
-        if codigo_categoria == None:
-            self.__tela_orcamento.mostra_mensagem("Você não tem categorias. Crie categorias primeiro")
-        categoria = self.__controlador_principal.controlador_categorias.buscar_categoria_por_codigo(codigo_categoria)
-
-        usuario_logado = self.__controlador_principal.controlador_usuarios.pega_codigo_usuario_logado()
-
-        if categoria is not None:
-            self.__metas.append(
-                Meta(dados_meta["meta"], categoria, usuario_logado))
-            self.__tela_orcamento.mostra_mensagem("Meta registrada com sucesso")
-        else:
-            raise CategoriaInvalidaError
+                if categoria is not None:
+                    self.__metas.append(
+                        Meta(float(dados_meta["meta"]), categoria, usuario_logado))
+                    self.__tela_orcamento.mostra_mensagem("Meta registrada com sucesso")
+                else:
+                    raise CategoriaInvalidaError
+            else:
+                raise TipoInvalidoError
+        except CategoriaInvalidaError as e:
+            print(e)
+            return
+        except TipoInvalidoError as e:
+            print(e)
+            return
 
     def atualiza_meta(self):
         self.lista_metas()
@@ -189,7 +198,7 @@ class ControladorOrcamentos:
 
             meta.meta = dados_meta["meta"]
         else:
-            self.__tela_gasto.mostra_mensagem("ATENCAO: Orçamento não existente")
+            self.__tela_orcamento.mostra_mensagem("ATENCAO: Orçamento não existente")
 
     def deleta_meta(self):
         self.lista_metas()
@@ -210,4 +219,9 @@ class ControladorOrcamentos:
                 metas.append(meta)
         return metas
 
-
+    def isfloat(self, input):
+        try:
+            float(input)
+            return True
+        except ValueError:
+            return False
