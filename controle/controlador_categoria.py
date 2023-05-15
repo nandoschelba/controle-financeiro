@@ -71,7 +71,7 @@ class ControladorCategoria:
                 break
 
     def seleciona_categoria(self):
-        return self.__tela_categoria.seleciona_categoria()
+        return self.__tela_categoria.pega_codigo_categoria("\nCódigo da categoria que deseja selecionar: ")
 
     def abre_tela(self):
         lista_opcoes = {1: self.adicionar_categoria, 2: self.listar_categorias, 3: self.buscar_categoria_e_editar,
