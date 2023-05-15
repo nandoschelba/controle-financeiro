@@ -28,7 +28,7 @@ class ControladorGastos:
                 self.mostra_gasto(gasto)
 
     def emite_relatorio(self):
-        dados = self.__tela_gasto.pega_dados_relario()
+        dados = self.__tela_gasto.pega_dados_relatorio()
         gastos = self.pega_gastos_por_usuario(dados["mes"], dados["ano"])
 
         for gasto in gastos:
@@ -78,8 +78,6 @@ class ControladorGastos:
         usuario_logado = self.__controlador_principal.controlador_usuarios.pega_codigo_usuario_logado()
         self.__gastos.append(Gasto(usuario_logado, dados_gasto["estabelecimento"], dados_gasto["mes"], dados_gasto["ano"], itens))
         self.__tela_gasto.mostra_mensagem("Gasto registrado com sucesso")
-
-    # code to add a new expense
 
     def deleta_gasto(self):
         self.lista_gastos()

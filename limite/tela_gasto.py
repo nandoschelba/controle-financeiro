@@ -28,7 +28,7 @@ class TelaGasto:
 
         return {"valor": valor, "descricao": descricao}
 
-    def pega_dados_relario(self):
+    def pega_dados_relatorio(self):
         print("-------- DADOS DO RELATÓRIO ----------")
         mes = input("MES: ")
         ano = input("ANO: ")

@@ -49,8 +49,8 @@ class ControladorOrcamentos:
             usuario_logado = self.__controlador_principal.controlador_usuarios.pega_codigo_usuario_logado()
 
             for orcamento in self.__orcamentos:
-                if str(orcamento.mes) == str(dados_orcamento["mes"]) and str(orcamento.mes) == str(dados_orcamento["ano"]) and str(orcamento.usuario) == str(usuario_logado):
-                    self.__tela_orcamento.mostra_mensagem("Você já tem um orçamento para o mesmo mês")
+                if str(orcamento.mes) == str(dados_orcamento["mes"]) and str(orcamento.ano) == str(dados_orcamento["ano"]) and str(orcamento.usuario) == str(usuario_logado):
+                    self.__tela_orcamento.mostra_mensagem("Você já tem um orçamento para o mesmo mês! Não é possível cadastrar outro orçamento.")
                     return
             metas = []
 
@@ -132,7 +132,7 @@ class ControladorOrcamentos:
 
         orcamento_mes = None
         for orcamento in self.__orcamentos:
-            if orcamento.mes == dados["mes"] & orcamento.ano == dados["ano"]:
+            if str(orcamento.mes) == str(dados["mes"]) and str(orcamento.ano) == str(dados["ano"]):
                 orcamento_mes = orcamento
 
         if (orcamento_mes is not None):
