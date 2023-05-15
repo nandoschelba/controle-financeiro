@@ -1,5 +1,6 @@
 from entidade.gasto import Gasto
 from exceptions.categoria_invalida_error import CategoriaInvalidaError
+from exceptions.tipo_invalido_error import TipoInvalidoError
 from limite.tela_gasto import TelaGasto
 from entidade.item import Item
 
@@ -30,7 +31,7 @@ class ControladorGastos:
                 self.mostra_gasto(gasto)
 
     def emite_relatorio(self):
-        dados = self.__tela_gasto.pega_dados_relario()
+        dados = self.__tela_gasto.pega_dados_relatorio()
         gastos = self.pega_gastos_por_usuario(dados["mes"], dados["ano"])
 
         for gasto in gastos:
@@ -73,6 +74,9 @@ class ControladorGastos:
             except CategoriaInvalidaError as e:
                 print(e)
                 return
+            except TipoInvalidoError as e:
+                print(e)
+                return
             self.__tela_gasto.mostra_mensagem("Item adicionado com sucesso")
             dado_add_novo = self.__tela_gasto.pega_add_novo()
             if dado_add_novo["adicionar_item"] != "s":
@@ -82,14 +86,12 @@ class ControladorGastos:
                                    dados_gasto["ano"], itens))
         self.__tela_gasto.mostra_mensagem("Gasto registrado com sucesso")
 
-    # code to add a new expense
-
     def deleta_gasto(self):
         self.lista_gastos()
         codigo_gasto = self.__tela_gasto.seleciona_gasto()
         gasto = self.pega_gasto_por_codigo(codigo_gasto)
 
-        if gasto is not None:
+        if (gasto is not None):
             self.__gastos.remove(gasto)
             self.lista_gastos()
         else:
@@ -97,15 +99,18 @@ class ControladorGastos:
 
     def add_item(self):
         dados_item = self.__tela_gasto.pega_dados_item()
-
-        self.__controlador_principal.controlador_categorias.listar_categorias()
-        codigo_categoria = self.__controlador_principal.controlador_categorias.seleciona_categoria()
-        categoria = self.__controlador_principal.controlador_categorias.buscar_categoria_por_codigo(codigo_categoria)
-
-        if categoria is not None:
-            return Item(dados_item["valor"], dados_item["descricao"], categoria)
+        if self.isfloat(dados_item["valor"]):
+            self.__controlador_principal.controlador_categorias.listar_categorias()
+            codigo_categoria = self.__controlador_principal.controlador_categorias.seleciona_categoria()
+            categoria = self.__controlador_principal.controlador_categorias.buscar_categoria_por_codigo(
+                codigo_categoria)
+            if categoria is not None:
+                return Item(float(dados_item["valor"]), dados_item["descricao"], categoria)
+            else:
+                raise CategoriaInvalidaError
         else:
-            raise CategoriaInvalidaError
+            raise TipoInvalidoError
+
 
     def atualiza_gasto(self):
         self.lista_gastos()
@@ -132,3 +137,10 @@ class ControladorGastos:
             gasto.itens.remove(item)
         else:
             self.__tela_gasto.mostra_mensagem("ATENCAO: Item não existente")
+
+    def isfloat(self, input):
+        try:
+            float(input)
+            return True
+        except ValueError:
+            return False

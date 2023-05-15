@@ -1,32 +1,43 @@
+from entidade.categoria import Categoria
+
+
 class Item:
     ultimo_codigo = 0
-    def __init__(self, valor, descricao, categoria=None):
+    def __init__(self, valor: float, descricao: str, categoria: Categoria):
         Item.ultimo_codigo += 1
-        self.codigo = Item.ultimo_codigo
-        self.valor = valor
-        self.descricao = descricao
-        self.categoria = categoria
+        self.__codigo = Item.ultimo_codigo
+        self.__valor = valor
+        self.__descricao = descricao
+        self.__categoria = categoria
 
-    def codigo(self, codigo=None):
-        if codigo is not None:
-            self.codigo = codigo
-        else:
-            return self.codigo
+    @property
+    def codigo(self):
+        return self.__codigo
 
-    def valor(self, valor=None):
-        if valor is not None:
-            self.valor = valor
-        else:
-            return self.valor
+    @codigo.setter
+    def codigo(self, codigo):
+        self.__codigo = codigo
 
-    def descricao(self, descricao=None):
-        if descricao is not None:
-            self.descricao = descricao
-        else:
-            return self.descricao
+    @property
+    def valor(self):
+        return self.__valor
 
-    def categoria(self, categoria=None):
-        if categoria is not None:
-            self.categoria = categoria
-        else:
-            return self.categoria
+    @valor.setter
+    def valor(self, valor):
+        self.__valor = valor
+
+    @property
+    def descricao(self):
+        return self.__descricao
+
+    @descricao.setter
+    def descricao(self, descricao):
+        self.__descricao = descricao
+
+    @property
+    def categoria(self):
+        return self.__categoria
+
+    @categoria.setter
+    def categoria(self, categoria):
+        self.__categoria = categoria
