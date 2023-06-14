@@ -98,10 +98,10 @@ class ControladorCategoria:
         categorias_usuario_logado = self.retorna_categorias_usuario_logado()
         if categorias_usuario_logado:
             for categoria in categorias_usuario_logado:
+                print(categoria.nome)
                 if categoria.codigo == codigo:
                     return categoria
-                else:
-                    return self.__tela_categoria.mostra_mensagem("\nCategoria não encontrada.")
+            return self.__tela_categoria.mostra_mensagem("\nCategoria não encontrada.")
         else:
             return None
 
