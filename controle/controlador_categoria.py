@@ -1,26 +1,28 @@
 from entidade.categoria import Categoria
 from limite.tela_categoria import TelaCategoria
+from persistencia.categoria_dao import CategoriaDAO
 
 
 class ControladorCategoria:
     def __init__(self, controlador_sistema):
         self.__controlador_sistema = controlador_sistema
         self.__tela_categoria = TelaCategoria()
-        self.categorias = []
+        self.__categoria_dao = CategoriaDAO()
 
     def adicionar_categoria(self):
         dados_categoria = self.__tela_categoria.pega_dados_categoria()
         if dados_categoria:
             nome_categoria = dados_categoria["nome"]
             descricao_categoria = dados_categoria["descricao"]
-            id_usuario = self.pega_id_usuario_logado()
+            usuario = self.pega_usuario_logado()
             for categoria in self.retorna_categorias_usuario_logado(False):
-                if categoria.nome == nome_categoria and categoria.id_usuario == id_usuario:
+                if categoria.nome == nome_categoria and categoria.usuario.identificador() == \
+                                                        self.pega_id_usuario_logado():
                     print("\nJá existe uma categoria com esse nome.")
                     return
-            codigo = len(self.categorias) + 1
-            categoria = Categoria(codigo, nome_categoria, descricao_categoria, id_usuario)
-            self.categorias.append(categoria)
+            codigo = len(self.__categoria_dao.get_all()) + 1
+            categoria = Categoria(codigo, nome_categoria, descricao_categoria, usuario)
+            self.__categoria_dao.add(codigo, categoria)
             self.__tela_categoria.mostra_mensagem("\nCategoria cadastrada com sucesso!")
 
     def buscar_categoria_e_editar(self):
@@ -64,9 +66,9 @@ class ControladorCategoria:
                     return
 
     def excluir_categoria(self, codigo):
-        for categoria in self.categorias:
-            if categoria.codigo == codigo and categoria.id_usuario == self.pega_id_usuario_logado():
-                self.categorias.remove(categoria)
+        for categoria in self.__categoria_dao.get_all():
+            if categoria.codigo == codigo and categoria.usuario.identificador() == self.pega_id_usuario_logado():
+                self.__categoria_dao.remove(categoria.codigo)
                 self.__tela_categoria.mostra_mensagem("\nCategoria excluída com sucesso!")
                 break
 
@@ -83,9 +85,9 @@ class ControladorCategoria:
                 print("\nOpção inválida. Digite um número válido.")
 
     def retorna_categorias_usuario_logado(self, mostrar_mensagem: bool = True):
-        categorias_usuario_logado = [categoria for categoria in self.categorias
+        categorias_usuario_logado = [categoria for categoria in self.__categoria_dao.get_all()
                                      if
-                                     categoria.id_usuario == self.pega_id_usuario_logado()]
+                                     categoria.usuario.identificador() == self.pega_id_usuario_logado()]
 
         if not categorias_usuario_logado:
             if mostrar_mensagem:
@@ -104,8 +106,11 @@ class ControladorCategoria:
         else:
             return None
 
+    def pega_usuario_logado(self):
+        return self.__controlador_sistema.controlador_usuarios.usuario_logado
+
     def pega_id_usuario_logado(self):
-        return self.__controlador_sistema.controlador_usuarios.usuario_logado.identificador()
+        return self.pega_usuario_logado().identificador()
 
     def retornar(self):
         self.__controlador_sistema.abre_tela()

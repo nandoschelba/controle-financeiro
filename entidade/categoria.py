@@ -1,11 +1,12 @@
+from entidade.usuario import Usuario
 
 
 class Categoria:
-    def __init__(self, codigo: int, nome: str, descricao: str, id_usuario: int):
+    def __init__(self, codigo: int, nome: str, descricao: str, usuario: int):
         self.__codigo = codigo
         self.__nome = nome
         self.__descricao = descricao
-        self.__id_usuario = id_usuario
+        self.__usuario = usuario
 
     @property
     def nome(self):
@@ -32,9 +33,9 @@ class Categoria:
         self.__codigo = codigo
 
     @property
-    def id_usuario(self):
-        return self.__id_usuario
+    def usuario(self):
+        return self.__usuario
 
-    @id_usuario.setter
-    def id_usuario(self, id_usuario):
-        self.__id_usuario = id_usuario
+    @usuario.setter
+    def usuario(self, usuario: Usuario):
+        self.__usuario = usuario
