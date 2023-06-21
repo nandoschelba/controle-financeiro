@@ -8,11 +8,15 @@ class ControladorUsuarios:
         from limite.tela_usuario import TelaUsuario
         self.__usuario_dao = UsuarioDAO()
         self.__controlador_sistema = controlador_sistema
-        self.__tela_usuario = TelaUsuario(self)
+        self.__tela_usuario = TelaUsuario()
         self.usuario_logado = None
 
     def pega_tipo_usuario(self):
-        self.__tela_usuario.pega_dados_usuario()
+        usuario = self.__tela_usuario.pega_dados_usuario()
+        if usuario is not None and 'cpf' in usuario:
+            self.adiciona_usuario_fisico(usuario["nome"], usuario["email"], usuario["cpf"])
+        if usuario is not None and 'cnpj' in usuario:
+            self.adiciona_usuario_juridico(usuario["nome"], usuario["email"], usuario["cnpj"])
 
     def adiciona_usuario_juridico(self, nome: str, email: str, cnpj: int):
         if not isinstance(nome, str) or not isinstance(email, str) or not isinstance(cnpj, int):

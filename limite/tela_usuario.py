@@ -1,9 +1,6 @@
-from controle.controlador_usuarios import ControladorUsuarios
-
+import PySimpleGUI as sg
 
 class TelaUsuario:
-    def __init__(self, controlador_usuario: ControladorUsuarios):
-        self.__controlador_usuario = controlador_usuario
 
     def tela_opcoes(self):
         opcoes_validas = [0, 1, 2]
@@ -38,14 +35,16 @@ class TelaUsuario:
                 return print("\nCPF deve ser um número inteiro.")
             if len(cpf) != 11:
                 return print("\nUm CPF válido deve ter 11 digitos.")
-            return self.__controlador_usuario.adiciona_usuario_fisico(nome, email, int(cpf))
+            novo_usuario = {"nome": nome, "email": email, "cpf": int(cpf)}
+            return novo_usuario
         elif tipo_usuario == 2:
             cnpj = input("CNPJ: ")
             if not cnpj.isdigit():
                 return print("\nCNPJ deve ser um número inteiro.")
             if len(cnpj) != 14:
                 return print("\nUm CNPJ válido deve ter 14 digitos.")
-            return self.__controlador_usuario.adiciona_usuario_juridico(nome, email, int(cnpj))
+            novo_usuario = {"nome": nome, "email": email, "cnpj": int(cnpj)}
+            return novo_usuario
 
     def pega_dados_usuario_edicao(self):
         while True:
