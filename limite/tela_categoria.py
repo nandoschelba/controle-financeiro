@@ -99,6 +99,58 @@ class TelaCategoria:
             return
         return int(opcao)
 
+    def editar_categoria(self, categorias):
+        sg.ChangeLookAndFeel('Dark')
+        col = [[sg.Text('Nome', text_color='white'),
+                sg.Input('', key='nome')],
+               [sg.Text('Descrição', text_color='white'),
+                sg.Input('', key='descricao')]]
+
+        layout = [[sg.Listbox(values=[categoria.nome for categoria in categorias],
+                              key='listbox',
+                              select_mode=sg.LISTBOX_SELECT_MODE_SINGLE,
+                              size=(20, 10),
+                              enable_events=True),
+                   sg.Column(col)],
+                  [sg.Button('Confirmar'), sg.Cancel('Cancelar')]]
+
+        window = sg.Window('Editar Categoria', layout)
+
+        while True:
+            event, values = window.read()
+
+            if event in (None, 'Cancelar'):
+                window.close()
+                return None
+            elif event == 'Confirmar':
+                selected_item = values['listbox'][0] if values['listbox'] else None
+                if selected_item:
+                    categoria_selecionada = next((categoria for categoria in categorias if categoria.nome == selected_item),
+
+                                                 None)
+                    nome = values['nome']
+                    descricao = values['descricao']
+                    codigo = categoria_selecionada.codigo
+                    if not nome.strip():
+                        self.mostra_mensagem("Nome não pode estar vazio.")
+                        return window.close()
+                    if not descricao.strip():
+                        self.mostra_mensagem("A descrição não pode estar vazia.")
+                        return window.close()
+                    categoria_editada = {"nome": nome, "descricao": descricao, "codigo": codigo}
+                    window.close()
+                    return categoria_editada
+                else:
+                    self.mostra_mensagem("É necessário selecionar pelo menos uma categoria para editar")
+
+            elif event == 'listbox':
+                selected_item = values['listbox'][0]
+                categoria_selecionada = next(
+                    (categoria for categoria in categorias if categoria.nome == selected_item), None)
+                if categoria_selecionada:
+                    window['nome'].update(categoria_selecionada.nome)
+                    window['descricao'].update(categoria_selecionada.descricao)
+
     def mostra_mensagem(self, msg):
         sg.popup("", msg)
 
