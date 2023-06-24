@@ -1,7 +1,10 @@
+from entidade.usuario import Usuario
+
+
 class Orcamento:
     ultimo_codigo = 0
 
-    def __init__(self, mes: int, ano: int, usuario: int, metas: []):
+    def __init__(self, mes: int, ano: int, usuario: Usuario, metas: []):
         Orcamento.ultimo_codigo += 1
         self.__codigo = Orcamento.ultimo_codigo
         self.__mes = mes
