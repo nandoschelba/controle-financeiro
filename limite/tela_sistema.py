@@ -30,7 +30,7 @@ class TelaSistema:
             [sg.Radio('Finalizar sistema', "RD1", key='0')],
             [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
         ]
-        self.__window = sg.Window('Sistema de livros').Layout(layout)
+        self.__window = sg.Window('Gestão de gastos').Layout(layout)
 
     def tela_opcoes_usuario_logado(self, nome_usuario):
         self.inicia_componentes_logado(nome_usuario)
@@ -63,4 +63,4 @@ class TelaSistema:
             [sg.Radio('Finalizar sistema', "RD1", key='0')],
             [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
         ]
-        self.__window = sg.Window('Sistema de livros').Layout(layout)
+        self.__window = sg.Window('Bem vindo!').Layout(layout)

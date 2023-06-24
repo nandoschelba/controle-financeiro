@@ -45,20 +45,15 @@ class ControladorCategoria:
     def listar_categorias(self):
         categorias_usuario_logado = self.retorna_categorias_usuario_logado()
         if categorias_usuario_logado:
-            for categoria in categorias_usuario_logado:
-                self.__tela_categoria.mostra_categoria({"codigo": categoria.codigo, "nome": categoria.nome,
-                                                        "descricao": categoria.descricao})
+            self.__tela_categoria.listar_categorias(categorias_usuario_logado)
 
     def busca_categoria_e_exclui(self):
-        categorias_usuario_logado = self.retorna_categorias_usuario_logado()
-        if categorias_usuario_logado:
-            codigo = self.__tela_categoria.pega_codigo_categoria("Insira o ID da categoria que você quer excluir: ")
-            if not codigo:
-                return None
-            categoria = self.buscar_categoria_por_codigo(codigo)
-            if categoria:
-                if self.__tela_categoria.confirmar_deletar_categoria() == 1:
-                    return self.excluir_categoria(codigo)
+        categorias_usuario = self.retorna_categorias_usuario_logado()
+        if categorias_usuario:
+            categoria_escolhida = self.__tela_categoria.mostrar_categoria_exclusao(categorias_usuario)
+            if categoria_escolhida is not None:
+                if self.__tela_categoria.confirmar_deletar_categoria(categoria_escolhida) == 1:
+                    return self.excluir_categoria(categoria_escolhida.codigo)
                 else:
                     return
 

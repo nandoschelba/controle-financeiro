@@ -54,7 +54,7 @@ class TelaUsuario:
             [sg.Radio('Encerrar conta', "RD1", key='2')],
             [sg.Button('Confirmar'), sg.Cancel('Voltar')]
         ]
-        self.__window = sg.Window('Sistema de livros').Layout(layout)
+        self.__window = sg.Window('Configurações de usuário').Layout(layout)
 
     def pega_dados_usuario(self):
         sg.ChangeLookAndFeel('Dark')

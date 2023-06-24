@@ -72,33 +72,6 @@ class TelaCategoria:
             return
         return int(codigo)
 
-    def pega_novos_dados_categoria(self, categoria_selecionada):
-        print("\n------ Categoria selecionada ------")
-        print("Código:", categoria_selecionada.codigo)
-        print("Nome:", categoria_selecionada.nome)
-        print("Descrição:", categoria_selecionada.descricao)
-        while True:
-            nome = input("\nNovo nome da categoria: ")
-            if not nome.strip():
-                return print("\nNome não pode estar vazio.")
-            descricao = input("Nova descricao: ")
-            if not descricao.strip():
-                return print("\nDescrição não pode estar vazio.")
-            else:
-                return {"nome": nome, "descricao": descricao, "codigo": categoria_selecionada.codigo}
-
-    def confirmar_deletar_categoria(self):
-        opcoes_validas = [0, 1]
-        print("\n------ Tem certeza que deseja excluir a categoria? Esta ação é irreversível. ------")
-        print("1 - Sim")
-        print("0 - Voltar")
-        opcao = input("Escolha a opção desejada: ")
-        if not opcao.isdigit():
-            return
-        if int(opcao) not in opcoes_validas:
-            return
-        return int(opcao)
-
     def editar_categoria(self, categorias):
         sg.ChangeLookAndFeel('Dark')
         col = [[sg.Text('Nome', text_color='white'),
@@ -125,9 +98,9 @@ class TelaCategoria:
             elif event == 'Confirmar':
                 selected_item = values['listbox'][0] if values['listbox'] else None
                 if selected_item:
-                    categoria_selecionada = next((categoria for categoria in categorias if categoria.nome == selected_item),
-
-                                                 None)
+                    categoria_selecionada = next(
+                        (categoria for categoria in categorias if categoria.nome == selected_item),
+                        None)
                     nome = values['nome']
                     descricao = values['descricao']
                     codigo = categoria_selecionada.codigo
@@ -150,6 +123,78 @@ class TelaCategoria:
                 if categoria_selecionada:
                     window['nome'].update(categoria_selecionada.nome)
                     window['descricao'].update(categoria_selecionada.descricao)
+
+    def mostrar_categoria_exclusao(self, categorias):
+        sg.ChangeLookAndFeel('Dark')
+        layout = [[sg.Text('-------- Excluir categoria ----------', font=("Helvica", 25))],
+                  [sg.Listbox(values=[categoria.nome for categoria in categorias],
+                              key='listbox',
+                              select_mode=sg.LISTBOX_SELECT_MODE_SINGLE,
+                              size=(100, 10),
+                              enable_events=True)],
+                  [sg.Button('Confirmar'), sg.Cancel('Cancelar')]]
+
+        window = sg.Window('Excluir Categoria', layout)
+
+        while True:
+            event, values = window.read()
+
+            if event in (None, 'Cancelar'):
+                window.close()
+                return None
+            elif event == 'Confirmar':
+                selected_item = values['listbox'][0] if values['listbox'] else None
+                if selected_item:
+                    categoria_selecionada = next(
+                        (categoria for categoria in categorias if categoria.nome == selected_item),
+
+                        None)
+                    window.close()
+                    return categoria_selecionada
+                else:
+                    self.mostra_mensagem("Selecione a categoria que gostaria de excluir antes de confirmar")
+
+
+    def confirmar_deletar_categoria(self, categoria):
+        sg.ChangeLookAndFeel('Dark')
+        layout = [
+            [sg.Text(f'Tem certeza que deseja excluir a categoria - {categoria.nome}? Esta ação é irreversível.',
+                     font=("Helvica", 25))],
+            [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
+        ]
+        self.__window = sg.Window('Excluir categoria').Layout(layout)
+
+        button, values = self.__window.Read()
+
+        if button in (None, 'Cancelar'):
+            self.close()
+            return None
+        elif button == 'Confirmar':
+            self.close()
+            return 1
+
+    def listar_categorias(self, categorias):
+        data = [[categoria.nome, categoria.descricao] for categoria in categorias]
+
+        layout = [
+            [sg.Table(values=data,
+                      headings=['Nome', 'Descrição'],
+                      auto_size_columns=True,
+                      col_widths=[50, 50],
+                      justification='center',
+                      key='-TABLE-')],
+            [sg.Button('Voltar')]
+        ]
+
+        window = sg.Window('Lista de Categorias', layout)
+
+        while True:
+            event, values = window.read()
+
+            if event == sg.WINDOW_CLOSED or event == 'Voltar':
+                break
+
+        window.close()
 
     def mostra_mensagem(self, msg):
         sg.popup("", msg)
