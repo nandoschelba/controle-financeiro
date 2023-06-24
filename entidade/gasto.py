@@ -1,6 +1,9 @@
+from entidade.usuario import Usuario
+
+
 class Gasto:
     ultimo_codigo = 0
-    def __init__(self, usuario: int, estabelecimento: str, mes: int, ano: int, itens=[]):
+    def __init__(self, usuario: Usuario, estabelecimento: str, mes: int, ano: int, itens=[]):
         Gasto.ultimo_codigo += 1
         self.__codigo = Gasto.ultimo_codigo
         self.__usuario = usuario

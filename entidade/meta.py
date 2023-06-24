@@ -1,10 +1,11 @@
 from entidade.categoria import Categoria
+from entidade.usuario import Usuario
 
 
 class Meta:
     ultimo_codigo = 0
 
-    def __init__(self, meta: float, categoria: Categoria, usuario: int):
+    def __init__(self, meta: float, categoria: Categoria, usuario: Usuario):
         Meta.ultimo_codigo += 1
         self.__codigo = Meta.ultimo_codigo
         self.__meta = meta
