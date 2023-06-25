@@ -59,18 +59,30 @@ class TelaCategoria:
             self.close()
             return {"nome": nome, "descricao": descricao}
 
-    def mostra_categoria(self, dados_categoria):
-        print("\n----------------------")
-        print("Código:", dados_categoria["codigo"])
-        print("Nome:", dados_categoria["nome"])
-        print("Descrição:", dados_categoria["descricao"])
+    def pega_codigo_categoria(self, categorias):
+        sg.ChangeLookAndFeel('Dark')
+        layout = [[sg.Listbox(values=[categoria.nome for categoria in categorias],
+                              key='listbox',
+                              select_mode=sg.LISTBOX_SELECT_MODE_SINGLE,
+                              size=(100, 10),
+                              enable_events=True)],
+                  [sg.Button('Confirmar')]]
 
-    def pega_codigo_categoria(self, mensagem_input: str):
-        codigo = input("\n" + mensagem_input)
-        if not codigo.isdigit():
-            print("\nO código deve ser um número inteiro")
-            return
-        return int(codigo)
+        window = sg.Window('Selecionar categoria', layout)
+
+        while True:
+            event, values = window.read()
+
+            if event == 'Confirmar':
+                selected_item = values['listbox'][0] if values['listbox'] else None
+                if selected_item:
+                    categoria_selecionada = next(
+                        (categoria for categoria in categorias if categoria.nome == selected_item),
+                        None)
+                    window.close()
+                    return categoria_selecionada
+                else:
+                    self.mostra_mensagem('Selecione pelo menos uma categoria para continuar')
 
     def editar_categoria(self, categorias):
         sg.ChangeLookAndFeel('Dark')
