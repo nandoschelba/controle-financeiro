@@ -24,7 +24,8 @@ class ControladorOrcamentos:
             try:
                 lista_opcoes[self.__tela_orcamento.tela_opcoes()]()
             except KeyError:
-                print("\nOpção inválida. Digite um número válido.")
+                self.__tela_orcamento.mostra_error_mensagem("Opção inválida. Digite um número válido.")
+
 
     def retornar(self):
         self.__controlador_principal.abre_tela()
@@ -34,13 +35,16 @@ class ControladorOrcamentos:
         for orcamento in self.pega_lista_orcamentos():
             orcamentos.append({"codigo": orcamento.codigo, "valor_disponivel": orcamento.valor_disponivel(),
                                "mes": orcamento.mes, "ano": orcamento.ano, "metas": orcamento.metas})
+        if len(orcamentos) == 0:
+            self.__tela_orcamento.mostra_mensagem("ATENCAO: Não há orçamentos")
+            return
         self.__tela_orcamento.mostra_orcamento(orcamentos)
 
     def pega_lista_orcamentos(self):
         usuario_logado = self.__controlador_principal.controlador_usuarios.pega_codigo_usuario_logado()
         orcamentos = []
         for orcamento in self.__orcamento_dao.get_all():
-            if str(usuario_logado) == str(orcamento.usuario):
+            if usuario_logado == orcamento.usuario.identificador():
                 orcamentos.append(orcamento)
         return orcamentos
 
@@ -52,40 +56,43 @@ class ControladorOrcamentos:
 
     def adiciona_orcamento(self):
         if len(self.pega_metas_usuario()) == 0:
-            self.__tela_orcamento.mostra_mensagem("Você não tem metas. Crie metas primeiro")
+            self.__tela_orcamento.mostra_error_mensagem("Você não tem metas. Crie metas primeiro")
         else:
             dados_orcamento = self.__tela_orcamento.pega_dados_orcaento()
             usuario_logado = self.__controlador_principal.controlador_usuarios.pega_codigo_usuario_logado()
-            # pegas as obj
 
             for orcamento in self.__orcamento_dao.get_all():
-                if str(orcamento.mes) == str(dados_orcamento["mes"]) and str(orcamento.ano) == str(dados_orcamento["ano"]) and str(orcamento.usuario) == str(usuario_logado):
-                    self.__tela_orcamento.mostra_mensagem("Você já tem um orçamento para o mesmo mês! Não é possível cadastrar outro orçamento.")
+                if str(orcamento.mes) == str(dados_orcamento["mes"]) and str(orcamento.ano) == str(dados_orcamento["ano"]) and orcamento.usuario.identificador() == usuario_logado:
+                    self.__tela_orcamento.mostra_error_mensagem("Você já tem um orçamento para o mesmo mês! Não é possível cadastrar outro orçamento.")
                     return
             metas = []
 
-            add_metas = True
-            while add_metas:
+            while True:
                 try:
                     metas.append(self.add_meta(metas))
                 except MetaInvalidaError as e:
-                    print(e)
+                    self.__tela_orcamento.mostra_error_mensagem(e)
                     return
                 except MetaProibidaError as e:
-                    print(e)
+                    self.__tela_orcamento.mostra_error_mensagem(e)
                     return
                 self.__tela_orcamento.mostra_mensagem("Meta adicionada com sucesso")
                 dado_add_novo = self.__tela_orcamento.pega_add_novo()
-                if dado_add_novo["adicionar_meta"] != "s":
-                    add_metas = False
+                if not dado_add_novo["adicionar_meta"]:
+                    break
 
+            usuario_logado_object = self.__controlador_principal.controlador_usuarios.pega_usuario_logado()
             self.__orcamento_dao.add(
-                Orcamento(dados_orcamento["mes"], dados_orcamento["ano"], usuario_logado, metas))
+                Orcamento(dados_orcamento["mes"], dados_orcamento["ano"], usuario_logado_object, metas))
+            print(len(self.__orcamento_dao.get_all()))
             self.__tela_orcamento.mostra_mensagem("Orcamento registrado com sucesso")
 
     def add_meta(self, metas):
-        self.lista_metas()
-        codigo_meta = self.__tela_orcamento.seleciona_meta(self.pega_metas_usuario())
+        metas_usuario = self.pega_metas_usuario()
+        if len(metas_usuario) == 0:
+            self.__tela_orcamento.mostra_mensagem("ATENCAO: Não há metas")
+            return
+        codigo_meta = self.__tela_orcamento.seleciona_meta(metas_usuario)
         meta = self.pega_meta_por_codigo(codigo_meta)
         if meta is not None:
             for meta_adicionada in metas:
@@ -96,8 +103,11 @@ class ControladorOrcamentos:
             raise MetaInvalidaError
 
     def deleta_orcamento(self):
-        self.lista_orcamentos()
-        codigo_orcamento = self.__tela_orcamento.seleciona_orcamento(self.pega_lista_orcamentos())
+        orcamentos_usuario = self.pega_lista_orcamentos()
+        if len(orcamentos_usuario) == 0:
+            self.__tela_orcamento.mostra_mensagem("ATENCAO: Não há orçamentos")
+            return
+        codigo_orcamento = self.__tela_orcamento.seleciona_orcamento(orcamentos_usuario)
         orcamento = self.pega_orcamento_por_codigo(codigo_orcamento)
 
         if orcamento is not None:
@@ -108,8 +118,11 @@ class ControladorOrcamentos:
         pass
 
     def atualiza_orcamento(self):
-        self.lista_orcamentos()
-        codigo_orcamento = self.__tela_orcamento.seleciona_orcamento(self.pega_lista_orcamentos())
+        orcamentos_usuario = self.pega_lista_orcamentos()
+        if len(orcamentos_usuario) == 0:
+            self.__tela_orcamento.mostra_mensagem("ATENCAO: Não há orçamentos")
+            return
+        codigo_orcamento = self.__tela_orcamento.seleciona_orcamento(orcamentos_usuario)
         orcamento = self.pega_orcamento_por_codigo(codigo_orcamento)
 
         if orcamento is not None:
@@ -120,14 +133,14 @@ class ControladorOrcamentos:
                 try:
                     metas.append(self.add_meta(metas))
                 except MetaInvalidaError as e:
-                    print(e)
+                    self.__tela_orcamento.mostra_error_mensagem(e)
                     return
                 except MetaProibidaError as e:
-                    print(e)
+                    self.__tela_orcamento.mostra_error_mensagem(e)
                     return
                 self.__tela_orcamento.mostra_mensagem("Meta adicionada com sucesso")
                 dado_add_novo = self.__tela_orcamento.pega_add_novo()
-                if dado_add_novo["adicionar_meta"] != "s":
+                if not dado_add_novo["adicionar_meta"]:
                     break
 
             orcamento.mes = dados_orcamento["mes"]
@@ -177,14 +190,15 @@ class ControladorOrcamentos:
 
     def adiciona_meta(self):
         dados_meta = self.__tela_orcamento.pega_dados_meta()
+        if dados_meta is None:
+            return
         try:
             if self.isfloat(dados_meta["meta"]):
                 self.__controlador_principal.controlador_categorias.listar_categorias()
                 codigo_categoria = self.__controlador_principal.controlador_categorias.seleciona_categoria()
                 categoria = self.__controlador_principal.controlador_categorias.buscar_categoria_por_codigo(
                     codigo_categoria)
-                usuario_logado = self.__controlador_principal.controlador_usuarios.pega_codigo_usuario_logado()
-                # pega usuario_logado as obj
+                usuario_logado = self.__controlador_principal.controlador_usuarios.pega_usuario_logado()
 
                 if categoria is not None:
                     self.__meta_dao.add(
@@ -195,15 +209,18 @@ class ControladorOrcamentos:
             else:
                 raise TipoInvalidoError
         except CategoriaInvalidaError as e:
-            print(e)
+            self.__tela_orcamento.mostra_error_mensagem(e)
             return
         except TipoInvalidoError as e:
-            print(e)
+            self.__tela_orcamento.mostra_error_mensagem(e)
             return
 
     def atualiza_meta(self):
-        self.lista_metas()
-        codigo_meta = self.__tela_orcamento.seleciona_meta(self.pega_metas_usuario())
+        metas = self.pega_metas_usuario()
+        if len(metas) == 0:
+            self.__tela_orcamento.mostra_mensagem("ATENCAO: Não há metas")
+            return
+        codigo_meta = self.__tela_orcamento.seleciona_meta(metas)
         meta = self.pega_meta_por_codigo(codigo_meta)
 
         if meta is not None:
@@ -214,15 +231,17 @@ class ControladorOrcamentos:
             self.__tela_orcamento.mostra_mensagem("ATENCAO: Orçamento não existente")
 
     def deleta_meta(self):
-        self.lista_metas()
-        codigo_meta = self.__tela_orcamento.seleciona_meta(self.pega_metas_usuario())
+        metas = self.pega_metas_usuario()
+        if len(metas) == 0:
+            self.__tela_orcamento.mostra_mensagem("ATENCAO: Não há metas")
+            return
+        codigo_meta = self.__tela_orcamento.seleciona_meta(metas)
         meta = self.pega_meta_por_codigo(codigo_meta)
 
         if meta is not None:
-            #find meta nos orçamentos do usuário e avisa usuário que tem pendente
             meta_utilizada = self.verifica_meta_utilizada(meta.codigo)
             if meta_utilizada:
-                self.__tela_orcamento.mostra_mensagem("ATENCAO: Essa meta já está sendo utilizada em aluns dos seus orçamentos. A partir de agora não poderá mais adiciona-lá, mas ela continuará existindo")
+                self.__tela_orcamento.mostra_error_mensagem("ATENCAO: Essa meta já está sendo utilizada em aluns dos seus orçamentos. A partir de agora não poderá mais adiciona-lá, mas ela continuará existindo")
             self.__meta_dao.remove(meta.codigo)
             self.lista_metas()
         else:
@@ -239,7 +258,7 @@ class ControladorOrcamentos:
         usuario_logado = self.__controlador_principal.controlador_usuarios.pega_codigo_usuario_logado()
         metas = []
         for meta in self.__meta_dao.get_all():
-            if usuario_logado == meta.usuario:
+            if usuario_logado == meta.usuario.identificador():
                 metas.append(meta)
         return metas
 

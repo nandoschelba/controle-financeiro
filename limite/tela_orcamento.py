@@ -7,8 +7,7 @@ class TelaOrcamento:
         self.init_opcoes()
 
     def init_opcoes(self):
-        # sg.theme_previewer()
-        sg.ChangeLookAndFeel('DarkTeal4')
+        sg.ChangeLookAndFeel('Dark')
         layout = [
             [sg.Text('-------- ORCAMENTOS ----------', font=("Helvica", 25))],
             [sg.Text('Escolha a opcao', font=("Helvica", 15))],
@@ -22,14 +21,15 @@ class TelaOrcamento:
             [sg.Radio('Atualizar meta', "RD1", key='8')],
             [sg.Radio('Emitir relatorio', "RD1", key='9')],
             [sg.Radio('Retornar', "RD1", key='0')],
-            [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
+            [sg.Button('Confirmar')]
         ]
         self.__window = sg.Window('Sistema de registro de gastos').Layout(layout)
 
     def tela_opcoes(self):
         self.init_opcoes()
         button, values = self.open()
-        opcoes_validas = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        opcoes_validas = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        opcao = 0
         if values['1']:
             opcao = 1
         if values['2']:
@@ -49,17 +49,18 @@ class TelaOrcamento:
         if values['9']:
             opcao = 9
 
-        if values['0'] or button in (None, 'Cancelar'):
+        if values['0']:
             opcao = 0
 
         if int(opcao) not in opcoes_validas:
+            self.close()
             return
 
         self.close()
         return opcao
 
     def pega_dados_orcaento(self):
-        sg.ChangeLookAndFeel('DarkTeal4')
+        sg.ChangeLookAndFeel('Dark')
         layout = [
             [sg.Text('-------- DADOS GERAIS DO ORCAMENTO ----------', font=("Helvica", 25))],
             [sg.Text('Mes:', size=(15, 1)), sg.InputText('', key='mes')],
@@ -69,14 +70,18 @@ class TelaOrcamento:
         self.__window = sg.Window('Sistema de registro de gastos').Layout(layout)
 
         button, values = self.open()
-        mes = values['mes']
-        ano = values['ano']
+        if button in (None, 'Cancelar'):
+            self.close()
+            return None
+        elif button == 'Confirmar':
+            mes = values['mes']
+            ano = values['ano']
 
-        self.close()
-        return {"mes": mes, "ano": ano}
+            self.close()
+            return {"mes": mes, "ano": ano}
 
     def pega_dados_meta(self):
-        sg.ChangeLookAndFeel('DarkTeal4')
+        sg.ChangeLookAndFeel('Dark')
         layout = [
             [sg.Text('-------- DADOS GERAIS DO ORCAMENTO ----------', font=("Helvica", 25))],
             [sg.Text('Meta(R$):', size=(15, 1)), sg.InputText('', key='meta')],
@@ -86,14 +91,18 @@ class TelaOrcamento:
         self.__window = sg.Window('Sistema de registro de gastos').Layout(layout)
 
         button, values = self.open()
-        meta = values['meta']
-        descricao = values['descricao']
+        if button in (None, 'Cancelar'):
+            self.close()
+            return None
+        elif button == 'Confirmar':
+            meta = values['meta']
+            descricao = values['descricao']
 
-        self.close()
-        return {"meta": meta, "descricao": descricao}
+            self.close()
+            return {"meta": meta, "descricao": descricao}
 
     def pega_dados_relario(self):
-        sg.ChangeLookAndFeel('DarkTeal4')
+        sg.ChangeLookAndFeel('Dark')
         layout = [
             [sg.Text('-------- DADOS DO RELATÓRIO ----------', font=("Helvica", 25))],
             [sg.Text('Mes:', size=(15, 1)), sg.InputText('', key='mes')],
@@ -103,29 +112,33 @@ class TelaOrcamento:
         self.__window = sg.Window('Sistema de registro de gastos').Layout(layout)
 
         button, values = self.open()
-        mes = values['mes']
-        ano = values['ano']
+        if button in (None, 'Cancelar'):
+            self.close()
+            return None
+        elif button == 'Confirmar':
+            mes = values['mes']
+            ano = values['ano']
 
-        self.close()
-        return {"mes": mes, "ano": ano}
+            self.close()
+            return {"mes": mes, "ano": ano}
 
     def pega_add_novo(self):
-        sg.ChangeLookAndFeel('DarkTeal4')
+        sg.ChangeLookAndFeel('Dark')
         layout = [
             [sg.Text('-------- ADICIONAR MAIS UMA META? ----------', font=("Helvica", 25))],
-            [sg.Yes()],
-            [sg.No()],
+            [sg.Yes("Sim")],
+            [sg.No("Não")],
         ]
         self.__window = sg.Window('Sistema de registro de gastos').Layout(layout)
 
         button, values = self.open()
-        print(button)
-        adicionar_meta = False if button == "Yes" else False
+        adicionar_meta = False if button == "Sim" else True
 
         self.close()
         return {"adicionar_meta": adicionar_meta}
 
     def mostra_orcamento(self, orcamentos):
+        sg.ChangeLookAndFeel('Dark')
         string_orcamentos = ""
         for orcamento in orcamentos:
             string_orcamentos = string_orcamentos + "VALOR DISPONÍVEL: " + str(orcamento["valor_disponivel"]) + '\n'
@@ -139,6 +152,7 @@ class TelaOrcamento:
         sg.Popup('-------- LISTA DE ORÇAMENTOS ----------', string_orcamentos)
 
     def mostra_meta(self, metas):
+        sg.ChangeLookAndFeel('Dark')
         string_metas = ""
         for meta in metas:
             string_metas = string_metas + "META: " + str(meta["meta"]) + '\n'
@@ -148,6 +162,7 @@ class TelaOrcamento:
         sg.Popup('-------- LISTA DE METAS ----------', string_metas)
 
     def mostra_relatorio(self, relatorio_itens):
+        sg.ChangeLookAndFeel('Dark')
         string_relatorio = ""
         for item in relatorio_itens:
             string_relatorio = string_relatorio + "DATA: " + str(item["mes"]) + "/" + str(item["ano"]) + '\n'
@@ -157,9 +172,8 @@ class TelaOrcamento:
 
         sg.Popup('-------- RELATÓRIO ----------', string_relatorio)
 
-        print("\n")
-
     def seleciona_orcamento(self, orcamentos):
+        sg.ChangeLookAndFeel('Dark')
         orcamentos_lista = []
         for orcamento in orcamentos:
             orcamentos_lista.append(str(orcamento.codigo) + "-" + str(orcamento.mes) + "-" + str(orcamento.ano))
@@ -171,13 +185,19 @@ class TelaOrcamento:
 
         self.__window = sg.Window('Sistema de registro de gastos').Layout(layout)
         button, value = self.open()
-        self.close()
+        if button in (None, 'Cancelar'):
+            self.close()
+            return None
+        elif button == 'Confirmar':
+            self.close()
 
-        codigo = value["orcamento"].split("-")[0]
-        return codigo
+            codigo = value["orcamento"].split("-")[0]
+            return codigo
 
     def seleciona_meta(self, metas):
+        sg.ChangeLookAndFeel('Dark')
         metas_lista = []
+
         for meta in metas:
             metas_lista.append(str(meta.codigo) + "-" + str(meta.meta) + "-" + str(meta.categoria.nome))
 
@@ -188,12 +208,17 @@ class TelaOrcamento:
 
         self.__window = sg.Window('Sistema de registro de gastos').Layout(layout)
         button, value = self.open()
-        self.close()
+        if button in (None, 'Cancelar'):
+            self.close()
+            return None
+        elif button == 'Confirmar':
+            self.close()
 
-        codigo = value["meta"].split("-")[0]
-        return codigo
+            codigo = value["meta"].split("-")[0]
+            return codigo
 
     def mostra_mensagem(self, mensagem):
+        sg.ChangeLookAndFeel('Dark')
         sg.popup("", mensagem)
 
     def close(self):
@@ -202,3 +227,7 @@ class TelaOrcamento:
     def open(self):
         button, values = self.__window.Read()
         return button, values
+
+    def mostra_error_mensagem(self, mensagem):
+        sg.ChangeLookAndFeel('DarkRed1')
+        sg.popup("", mensagem)

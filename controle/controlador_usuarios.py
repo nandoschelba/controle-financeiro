@@ -98,3 +98,9 @@ class ControladorUsuarios:
             return self.usuario_logado.identificador()
         else:
             return 0
+
+    def pega_usuario_logado(self):
+        if self.usuario_logado:
+            return self.usuario_logado
+        else:
+            return None

@@ -20,18 +20,20 @@ class ControladorGastos:
             try:
                 lista_opcoes[self.__tela_gasto.tela_opcoes()]()
             except KeyError:
-                print("\nOpção inválida. Digite um número válido.")
+                self.__tela_gasto.mostra_error_mensagem("Opção inválida. Digite um número válido.")
 
     def retornar(self):
         self.__controlador_principal.abre_tela()
 
     def lista_gastos(self):
         usuario_logado = self.__controlador_principal.controlador_usuarios.pega_codigo_usuario_logado()
-        #add usuario_logado.codigo
         gastos = []
         for gasto in self.__gastos_dao.get_all():
-            if str(usuario_logado) == str(gasto.usuario):
+            if usuario_logado == gasto.usuario.identificador():
                 gastos.append({"codigo": gasto.codigo, "estabelecimento": gasto.estabelecimento, "mes": gasto.mes, "ano": gasto.ano, "itens": gasto.itens})
+        if len(gastos) == 0:
+            self.__tela_gasto.mostra_mensagem("ATENCAO: Não há gastos")
+            return
         self.__tela_gasto.mostra_gasto(gastos)
 
     def emite_relatorio(self):
@@ -43,14 +45,16 @@ class ControladorGastos:
             gastos_selecionados.append({"codigo": gasto.codigo, "estabelecimento": gasto.estabelecimento, "mes": gasto.mes,
                                "ano": gasto.ano, "itens": gasto.itens})
 
+        if len(gastos_selecionados) == 0:
+            self.__tela_gasto.mostra_mensagem("ATENCAO: Não há gastos para este período")
+            return
         self.mostra_gasto(gastos_selecionados)
 
     def pega_gastos_por_usuario(self, mes, ano):
         usuario_logado = self.__controlador_principal.controlador_usuarios.pega_codigo_usuario_logado()
-        #add usuario_logado.codigo
         gastos = []
         for gasto in self.__gastos_dao.get_all():
-            if str(usuario_logado) == str(gasto.usuario) and str(gasto.mes) == str(mes) and str(gasto.ano) == str(ano):
+            if usuario_logado == gasto.usuario.identificador() and str(gasto.mes) == str(mes) and str(gasto.ano) == str(ano):
                 gastos.append(gasto)
 
         return gastos
@@ -69,6 +73,7 @@ class ControladorGastos:
 
     def mostra_gasto(self, gastos):
         self.__tela_gasto.mostra_gasto(gastos)
+
     def adiciona_gasto(self):
         dados_gasto = self.__tela_gasto.pega_dados_gasto()
         itens = []
@@ -77,17 +82,16 @@ class ControladorGastos:
             try:
                 itens.append(self.add_item())
             except CategoriaInvalidaError as e:
-                print(e)
+                self.__tela_gasto.mostra_error_mensagem(e)
                 return
             except TipoInvalidoError as e:
-                print(e)
+                self.__tela_gasto.mostra_error_mensagem(e)
                 return
             self.__tela_gasto.mostra_mensagem("Item adicionado com sucesso")
             dado_add_novo = self.__tela_gasto.pega_add_novo()
-            if dado_add_novo["adicionar_item"]:
+            if not dado_add_novo["adicionar_item"]:
                 break
-        usuario_logado = self.__controlador_principal.controlador_usuarios.pega_codigo_usuario_logado()
-        # add usuario_logado como obj
+        usuario_logado = self.__controlador_principal.controlador_usuarios.pega_usuario_logado()
         self.__gastos_dao.add(Gasto(usuario_logado, dados_gasto["estabelecimento"], dados_gasto["mes"],
                                    dados_gasto["ano"], itens))
         self.__tela_gasto.mostra_mensagem("Gasto registrado com sucesso")
@@ -95,11 +99,13 @@ class ControladorGastos:
     def deleta_gasto(self):
         self.lista_gastos()
         gastos_nomes = self.gastos_list()
+        if len(gastos_nomes) == 0:
+            self.__tela_gasto.mostra_mensagem("ATENCAO: Não há gastos")
+            return
         codigo_gasto = self.__tela_gasto.seleciona_gasto(gastos_nomes)
         gasto = self.pega_gasto_por_codigo(codigo_gasto)
         if (gasto is not None):
             self.__gastos_dao.remove(gasto.codigo)
-            self.lista_gastos()
         else:
             self.__tela_gasto.mostra_mensagem("ATENCAO: Gasto não existente")
 
@@ -107,8 +113,8 @@ class ControladorGastos:
         usuario_logado = self.__controlador_principal.controlador_usuarios.pega_codigo_usuario_logado()
         gastos = []
         for gasto in self.__gastos_dao.get_all():
-            if str(usuario_logado) == str(gasto.usuario):
-                gastos.append(str(gasto.codigo) + "-" + str(gasto.mes) + "-" + str(gasto.ano))
+            if usuario_logado == gasto.usuario.identificador():
+                gastos.append(str(gasto.codigo) + "-" + str(gasto.estabelecimento) + "-" +str(gasto.mes) + "-" + str(gasto.ano))
         return gastos
 
     def add_item(self):
@@ -125,10 +131,12 @@ class ControladorGastos:
         else:
             raise TipoInvalidoError
 
-
     def atualiza_gasto(self):
         self.lista_gastos()
         gastos_nomes = self.gastos_list()
+        if len(gastos_nomes) == 0:
+            self.__tela_gasto.mostra_mensagem("ATENCAO: Não há gastos")
+            return
         codigo_gasto = self.__tela_gasto.seleciona_gasto(gastos_nomes)
         gasto = self.pega_gasto_por_codigo(codigo_gasto)
 
@@ -140,14 +148,14 @@ class ControladorGastos:
                 try:
                     itens.append(self.add_item())
                 except CategoriaInvalidaError as e:
-                    print(e)
+                    self.__tela_gasto.mostra_error_mensagem(e)
                     return
                 except TipoInvalidoError as e:
-                    print(e)
+                    self.__tela_gasto.mostra_error_mensagem(e)
                     return
                 self.__tela_gasto.mostra_mensagem("Item adicionado com sucesso")
                 dado_add_novo = self.__tela_gasto.pega_add_novo()
-                if dado_add_novo["adicionar_item"] != "s":
+                if not dado_add_novo["adicionar_item"]:
                     break
 
             gasto.estabelecimento = dados_gasto["estabelecimento"]
@@ -160,6 +168,9 @@ class ControladorGastos:
     def deleta_item(self):
         self.lista_gastos()
         gastos_nomes = self.gastos_list()
+        if len(gastos_nomes) == 0:
+            self.__tela_gasto.mostra_mensagem("ATENCAO: Não há gastos")
+            return
         codigo_gasto = self.__tela_gasto.seleciona_gasto(gastos_nomes)
         gasto = self.pega_gasto_por_codigo(codigo_gasto)
 
