@@ -114,10 +114,10 @@ class ControladorGastos:
     def add_item(self):
         dados_item = self.__tela_gasto.pega_dados_item()
         if self.isfloat(dados_item["valor"]):
-            self.__controlador_principal.controlador_categorias.listar_categorias()
-            codigo_categoria = self.__controlador_principal.controlador_categorias.seleciona_categoria()
-            categoria = self.__controlador_principal.controlador_categorias.buscar_categoria_por_codigo(
-                codigo_categoria)
+            # self.__controlador_principal.controlador_categorias.listar_categorias()
+            categoria = self.__controlador_principal.controlador_categorias.seleciona_categoria()
+            # categoria = self.__controlador_principal.controlador_categorias.buscar_categoria_por_codigo(
+            #     codigo_categoria)
             if categoria is not None:
                 return Item(float(dados_item["valor"]), dados_item["descricao"], categoria)
             else:
