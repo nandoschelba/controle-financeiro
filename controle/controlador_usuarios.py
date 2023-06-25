@@ -43,34 +43,27 @@ class ControladorUsuarios:
     def abre_tela_usuario(self):
         lista_opcoes = {1: self.editar_usuario, 2: self.encerrar_conta, 0: self.retornar}
         while True:
-            try:
-                lista_opcoes[self.__tela_usuario.tela_opcoes()]()
-            except KeyError:
-                print("\nOpção inválida. Digite um número válido.")
+            lista_opcoes[self.__tela_usuario.tela_opcoes()]()
 
     def editar_usuario(self):
-        dados_edicao = self.__tela_usuario.pega_dados_usuario_edicao()
+        dados_edicao = self.__tela_usuario.pega_dados_usuario_edicao(self.usuario_logado.nome, self.usuario_logado.email)
         if dados_edicao:
             self.usuario_logado.nome = dados_edicao["nome"]
             self.usuario_logado.email = dados_edicao["email"]
             for usuario in self.__usuario_dao.get_all():
                 if usuario.identificador() == self.usuario_logado.identificador():
-                    usuario.nome = dados_edicao["nome"]
-                    usuario.email = dados_edicao["email"]
+                    self.__usuario_dao.update(self.usuario_logado.identificador, self.usuario_logado)
                     break
-            self.__tela_usuario.mostra_mensagem("\nUsuário editado com sucesso!")
+            self.__tela_usuario.mostra_mensagem("Usuário editado com sucesso!")
 
     def encerrar_conta(self):
         lista_opcoes = {1: self.deletar_usuario, 0: self.abre_tela_usuario}
         while True:
-            try:
-                opcao = self.__tela_usuario.confirmar_deletar_conta()
-                lista_opcoes[opcao]()
-            except KeyError:
-                self.__tela_usuario.mostra_mensagem("\nOpção inválida. Tente novamente.")
+            opcao = self.__tela_usuario.confirmar_deletar_conta()
+            lista_opcoes[opcao]()
 
     def deletar_usuario(self):
-        self.__usuario_dao.remove(self.usuario_logado.identificador)
+        self.__usuario_dao.remove(self.usuario_logado.identificador())
         self.usuario_logado = None
         self.__tela_usuario.mostra_mensagem("\nConta excluída com sucesso!")
         self.retornar()

@@ -17,3 +17,6 @@ class CategoriaDAO(DAO):
 
     def get(self, codigo: int):
         return super().get(codigo)
+
+    def update(self, codigo, obj):
+        super().update(codigo, obj)

@@ -30,8 +30,13 @@ class DAO(ABC):
     def remove(self, codigo):
         try:
             self.__cache.pop(codigo)
+            self.__dump()
         except KeyError:
             pass
 
     def get_all(self):
         return self.__cache.values()
+
+    def update(self, codigo, obj):
+        self.__cache[codigo] = obj
+        self.__dump()

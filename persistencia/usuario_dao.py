@@ -14,3 +14,6 @@ class UsuarioDAO(DAO):
 
     def get_all(self):
         return super().get_all()
+
+    def update(self, codigo, obj):
+        super().update(codigo, obj)

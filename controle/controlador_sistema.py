@@ -25,20 +25,12 @@ class ControladorSistema:
 
         while True:
             if self.__controlador_usuarios.usuario_logado:
-                opcao_escolhida = self.__tela_sistema.tela_opcoes_usuario_logado()
-                try:
-                    funcao_escolhida = lista_opcoes_usuario_logado[opcao_escolhida]
-                except KeyError:
-                    self.__tela_sistema.mostra_mensagem("\nOpção inválida. Tente novamente.")
-                    continue
+                opcao_escolhida = self.__tela_sistema.tela_opcoes_usuario_logado(self.__controlador_usuarios.usuario_logado.nome)
+                funcao_escolhida = lista_opcoes_usuario_logado[opcao_escolhida]
                 funcao_escolhida()
             else:
                 opcao_escolhida = self.__tela_sistema.tela_opcoes_usuario_deslogado()
-                try:
-                    funcao_escolhida = lista_opcoes_usuario_deslogado[opcao_escolhida]
-                except KeyError:
-                    self.__tela_sistema.mostra_mensagem("\nOpção inválida. Tente novamente.")
-                    continue
+                funcao_escolhida = lista_opcoes_usuario_deslogado[opcao_escolhida]
                 funcao_escolhida()
 
     def login(self):
