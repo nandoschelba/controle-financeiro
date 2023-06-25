@@ -132,7 +132,7 @@ class TelaOrcamento:
         self.__window = sg.Window('Sistema de registro de gastos').Layout(layout)
 
         button, values = self.open()
-        adicionar_meta = False if button == "Sim" else True
+        adicionar_meta = True if button == "Sim" else False
 
         self.close()
         return {"adicionar_meta": adicionar_meta}
@@ -167,8 +167,8 @@ class TelaOrcamento:
         for item in relatorio_itens:
             string_relatorio = string_relatorio + "DATA: " + str(item["mes"]) + "/" + str(item["ano"]) + '\n'
             string_relatorio = string_relatorio + "CATEGORIA: " + item["categoria"] + '\n'
-            string_relatorio = string_relatorio + "META: " + item["meta"] + '\n'
-            string_relatorio = string_relatorio + "GASTO: " + item["gasto"] + '\n'
+            string_relatorio = string_relatorio + "META: " + str(item["meta"]) + '\n'
+            string_relatorio = string_relatorio + "GASTO: " + str(item["gasto"]) + '\n'
 
         sg.Popup('-------- RELATÓRIO ----------', string_relatorio)
 

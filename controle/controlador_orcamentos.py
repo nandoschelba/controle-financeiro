@@ -169,7 +169,9 @@ class ControladorOrcamentos:
                 relatorio.append({"mes": dados["mes"], "ano": dados["ano"], "categoria": meta.categoria.nome,
                                   "meta": meta.meta, "gasto": total_gasto})
 
-
+            if len(relatorio) == 0:
+                self.__tela_orcamento.mostra_mensagem("ATENCAO: Não há registros para o peeríodo selecionado")
+                return
             self.__tela_orcamento.mostra_relatorio(relatorio)
         else:
             self.__tela_orcamento.mostra_mensagem("ATENCAO: Não há orçamento para o mês e ano selecionado")
@@ -194,10 +196,7 @@ class ControladorOrcamentos:
             return
         try:
             if self.isfloat(dados_meta["meta"]):
-                self.__controlador_principal.controlador_categorias.listar_categorias()
-                codigo_categoria = self.__controlador_principal.controlador_categorias.seleciona_categoria()
-                categoria = self.__controlador_principal.controlador_categorias.buscar_categoria_por_codigo(
-                    codigo_categoria)
+                categoria = self.__controlador_principal.controlador_categorias.seleciona_categoria()
                 usuario_logado = self.__controlador_principal.controlador_usuarios.pega_usuario_logado()
 
                 if categoria is not None:
