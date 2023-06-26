@@ -18,7 +18,7 @@ class ControladorCategoria:
             for categoria in self.retorna_categorias_usuario_logado(False):
                 if categoria.nome == nome_categoria and categoria.usuario.identificador() == \
                                                         self.pega_id_usuario_logado():
-                    print("\nJá existe uma categoria com esse nome.")
+                    self.__tela_categoria.mostra_mensagem("Já existe uma categoria com esse nome.")
                     return
             codigo = len(self.__categoria_dao.get_all()) + 1
             categoria = Categoria(codigo, nome_categoria, descricao_categoria, usuario)
@@ -73,10 +73,7 @@ class ControladorCategoria:
         lista_opcoes = {1: self.adicionar_categoria, 2: self.listar_categorias, 3: self.buscar_categoria_e_editar,
                         4: self.busca_categoria_e_exclui, 0: self.retornar}
         while True:
-            try:
-                lista_opcoes[self.__tela_categoria.tela_opcoes()]()
-            except KeyError:
-                print("\nOpção inválida. Digite um número válido.")
+            lista_opcoes[self.__tela_categoria.tela_opcoes()]()
 
     def retorna_categorias_usuario_logado(self, mostrar_mensagem: bool = True):
         categorias_usuario_logado = [categoria for categoria in self.__categoria_dao.get_all()
